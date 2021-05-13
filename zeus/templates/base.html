@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+{# 显式地使用with context声明传人当前模板的上下文 #}
+{% from 'macros/macros.html' import static_file with context %}
+<head>
+    {% block head %}
+    <meta charset="UTF-8">
+    <title>{% block title %}Base Title{% endblock %}</title>
+    <!-- 使用宏导入静态文件 -->
+    {{static_file('icon', 'images/icon/favicon.ico')}}
+    {{static_file('css','css/bootstrap.min.css')}}
+    {{static_file('css','css/jquery-confirm.min.css')}}
+    {{static_file('css','css/all.min.css')}}
+    {# --------- 引入子页面自己的css文件 --------- #}
+    {% block links %}{% endblock %}
+    {{static_file('js','js/jquery-3.6.0.min.js')}}
+    {{static_file('js','js/popper.min.js')}}
+    {{static_file('js','js/bootstrap.min.js')}}
+    {{static_file('js','js/jquery-confirm.min.js')}}
+    <!-- 生成执行时间渲染函数 -->
+    {{ moment.include_moment(local_js=url_for('static',filename='js/moment/moment-with-locales.js')) }}
+    <!-- 设置自动识别显示语言 -->
+    {{ moment.locale(auto_detect=True) }}
+    {# --------- 引入子页面自己的JavaScript文件 --------- #}
+    {% block scripts %}{% endblock %}
+    {# --------- 编写子页面自己的css样式 --------- #}
+    {% block styles %}{% endblock %}
+    {% endblock %}
+</head>
+<body>
+    <header style="margin-top:20px;">
+        {% block header %}
+            <div class="container">
+                <div class="row">
+                    <div class="col text-center">
+                        <h1><a href = "#">电子相册</a></h1>
+                        <small>{{ get_time() }}</small>
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+    </header>
+    <main>
+        {% block main %}{% endblock %}
+    </main>
+    <footer>
+        {% block footer %}{% endblock %}
+    </footer>
+    <script>
+        $(function(){
+            //alert('base is ready')
+        })
+        {# --------- 引入子页面JavaScritp变量 --------- #}
+        {% block variable %}{% endblock %}
+        {% block ready %}{% endblock %}
+        {# --------- 引入子页面自己的JavaScript函数 --------- #}
+        {% block function %}
+        function allAlert(){
+           $.alert({
+               type:'red',
+               //icon:'fa fa-info',
+               title:'提示',
+               content: 'I Am Ready To Go！',
+               onClose:function(){
+
+               }
+           })
+        }
+        function allClick(){
+            alert('All Click!!!')
+        }
+        {% endblock %}
+    </script>
+</body>
+</html>
