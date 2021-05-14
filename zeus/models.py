@@ -15,6 +15,7 @@ class User(db.Model, UserMixin):
     bio = db.Column(db.String(120))                                 #？？？
     location = db.Column(db.String(50))                             #地址
     member_since = db.Column(db.DateTime, default=datetime.utcnow)  #注册时间
+    active = db.Column(db.Boolean, default=False)                   #已激活
     # 设置密码-使用werkzeug.security提供的加密方式
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)

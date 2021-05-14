@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}相册首页{% endblock %}
+{% block main %}
+<div class = "container-fluid">
+    <div class="row">
+        <div class = "col-4 offset-4 text-center text-primary">
+            <span style = "font-size:72px;"><i class="fas fa-users"></i></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class = "col-6 offset-3">
+            {% if get_flashed_messages() %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                  {% for message in get_flashed_messages() %}
+                    <small>{{ message }}</small>
+                  {% endfor %}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class = "col-4 offset-4 text-center text-primary">
+            <h1>Home</h1>
+        </div>
+    </div>
+</div>
+{%endblock%}

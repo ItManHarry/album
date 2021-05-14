@@ -1,14 +1,14 @@
 from flask import Flask,render_template
 from flask_wtf.csrf import CSRFError
 from zeus.settings import config
-from zeus.extensions import bootstrap,moment,mail,ckeditor,db,migrate,csrf#,login_manager
+from zeus.extensions import bootstrap,moment,mail,ckeditor,db,migrate,csrf,login_manager
 import click
 import uuid
 #创建Flask实例
 def create_app(config_name=None):
     if config_name == None:
         config_name = 'dev_config'
-    print('System configuration is : %s' %config_name)
+    #print('System configuration is : %s' %config_name)
     #创建实例
     app = Flask('zeus')
     #加载配置
@@ -18,6 +18,7 @@ def create_app(config_name=None):
     register_web_global_path(app)
     register_web_global_context(app)
     register_web_errors(app)
+    register_web_views(app)
     register_web_shell(app)
     register_web_command(app)
     return app
@@ -29,7 +30,7 @@ def register_web_extensions(app):
     ckeditor.init_app(app)
     db.init_app(app)
     migrate.init_app(app, db)
-    #login_manager.init_app(app)
+    login_manager.init_app(app)
     csrf.init_app(app)
 #配置全局路径
 def register_web_global_path(app):
@@ -56,6 +57,12 @@ def register_web_errors(app):
     @app.errorhandler(CSRFError)
     def csrf_error(e):
         return render_template('errors/csrf.html')
+#注册系统各个功能模块
+def register_web_views(app):
+    from zeus.views.auth import bp_auth
+    from zeus.views.main import bp_main
+    app.register_blueprint(bp_auth, url_prefix='/auth')
+    app.register_blueprint(bp_main, url_prefix='/main')
 #注册shell环境
 def register_web_shell(app):
     @app.shell_context_processor
