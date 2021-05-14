@@ -2,6 +2,9 @@ from flask import Flask,render_template
 from flask_wtf.csrf import CSRFError
 from zeus.settings import config
 from zeus.extensions import bootstrap,moment,mail,ckeditor,db,migrate,csrf#,login_manager
+import click
+import uuid
+#创建Flask实例
 def create_app(config_name=None):
     if config_name == None:
         config_name = 'dev_config'
@@ -15,6 +18,8 @@ def create_app(config_name=None):
     register_web_global_path(app)
     register_web_global_context(app)
     register_web_errors(app)
+    register_web_shell(app)
+    register_web_command(app)
     return app
 #注册扩展组件
 def register_web_extensions(app):
@@ -51,3 +56,38 @@ def register_web_errors(app):
     @app.errorhandler(CSRFError)
     def csrf_error(e):
         return render_template('errors/csrf.html')
+#注册shell环境
+def register_web_shell(app):
+    @app.shell_context_processor
+    def make_shell_context():
+        return dict(db=db)
+#注册自定义命令
+def register_web_command(app):
+    #初始化系统
+    @app.cli.command()
+    @click.option('--username', prompt=True, help='用户账号.')
+    @click.option('--password', prompt=True, hide_input=True, confirmation_prompt=True,help='用户密码.')
+    def init(username, password):
+        from zeus.models import User
+        click.echo('执行数据库初始化......')
+        db.create_all()
+        click.echo('数据库初始化完成！！！')
+        click.echo('创建默认用户')
+        user = User.query.first()
+        if user:
+            click.echo('已存在用户,跳过创建......')
+        else:
+            click.echo('执行创建默认用户......')
+            user = User(
+                id = uuid.uuid4().hex,
+                code=username,
+                name = 'admin',
+                email = 'xxx@xxx.xxx',
+                website = 'http://xxx.xxx',
+                bio = 'xxx',
+                location = 'xxx-xxx-xxx'
+            )
+            user.set_password(password)
+            db.session.add(user)
+        db.session.commit()
+        click.echo('系统初始化完成......')
