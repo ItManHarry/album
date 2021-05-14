@@ -1,9 +1,9 @@
 from flask import Blueprint, render_template, url_for, redirect, request,flash
-from flask_login import login_required, current_user
-from zeus.forms.auth import RegisterForm
-from zeus.models import User
+from flask_login import login_required, current_user,login_user,logout_user
+from zeus.forms.auth import RegisterForm, LoginForm
+from zeus.models import User,Login
 from zeus.extensions import db
-from zeus.tools import generate_token,validate_token
+from zeus.tools import generate_token,validate_token,redirect_back
 from zeus.settings import operations
 from zeus.emails import active_account_email
 import uuid
@@ -54,3 +54,27 @@ def resend_confirm_email():
     active_account_email(current_user, token)
     flash('激活邮件已重新发送,请注意查收！！！')
     return redirect(url_for('main.index'))
+#登录
+@bp_auth.route('/login', methods = ['GET','POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        code = form.code.data
+        password = form.password.data
+        remember = form.remember.data
+        user = User.query.filter_by(code=code.lower()).first()
+        if user:
+            if user.validate_password(password):
+                login_user(user, remember)
+                #新增登录履历
+                login = Login(id=uuid.uuid4().hex,user_id=user.id)
+                db.session.add(login)
+                db.session.commit()
+                return redirect_back()
+            else:
+                flash('密码错误!!!')
+        else:
+            flash('账号不存在!!!')
+    return render_template('auth/login.html', form=form)

@@ -19,3 +19,9 @@ class RegisterForm(FlaskForm):
     def validate_code(self, field):
         if User.query.filter_by(code=field.data.lower()).first():
             raise ValidationError('账号已注册!!!')
+#登录表单
+class LoginForm(FlaskForm):
+    code = StringField('账号',validators=[DataRequired('请输入用户名!'),Length(1, 20, '长度要介于(1-20)')])
+    password = PasswordField('密码',validators=[DataRequired('请输入密码!'),Length(8, 128, '长度要介于(8-128)')])
+    remember = BooleanField('记住我')
+    submit = SubmitField('登录')
