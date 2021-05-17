@@ -36,8 +36,8 @@ def register():
 def confirm(token):
     if current_user.active:
         return redirect(url_for('main.index'))
-    if validate_token(user=current_user, token=token, operaion=operations['confirm']):
-        flash('验证通过,跳转主页......')
+    if validate_token(user=current_user, token=token, operation=operations['confirm']):
+        flash('账号已激活......')
         return redirect(url_for('main.index'))
     else:
         flash('验证失败,重新发送验证邮件......')
@@ -49,6 +49,7 @@ def resend_confirm_email():
         return redirect(url_for('main.index'))
     # 生成令牌
     token = generate_token(user=current_user, operation=operations['confirm'])
+    print('Confirm user token is : ', token)
     # 发送账号激活邮件
     active_account_email(current_user, token)
     flash('激活邮件已重新发送,请注意查收！！！')
