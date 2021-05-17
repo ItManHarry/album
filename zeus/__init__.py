@@ -92,7 +92,8 @@ def register_web_command(app):
                 email = 'xxx@xxx.xxx',
                 website = 'http://xxx.xxx',
                 bio = 'xxx',
-                location = 'xxx-xxx-xxx'
+                location = 'xxx-xxx-xxx',
+                active=True
             )
             user.set_password(password)
             db.session.add(user)

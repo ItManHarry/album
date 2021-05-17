@@ -12,7 +12,6 @@ bp_auth = Blueprint('auth', __name__)
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
-        print('执行注册')
         user = User(
             id=uuid.uuid4().hex,
             code = form.code.data.lower(),
@@ -30,7 +29,7 @@ def register():
         #发送账号激活邮件
         active_account_email(user, token)
         flash('注册成功,请在邮箱中点击激活账号,激活后登陆系统!!!')
-        return redirect(url_for('.register'))
+        return redirect(url_for('.login'))
     return render_template('auth/register.html', form=form)
 @bp_auth.route('/confirm/<token>')
 @login_required
@@ -64,6 +63,7 @@ def reset_password():
         user = User.query.filter_by(email=form.email.data.lower()).first()
         if user:
             token = generate_token(user=user, operation=operations['reset_password'])
+            print('Reset password token is : ', token)
             reset_password_email(user=user, token=token)
             flash('密码重置邮件已发送,请登录邮箱点击激活新密码!!!')
             return redirect(url_for('.login'))

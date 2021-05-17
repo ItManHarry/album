@@ -35,17 +35,17 @@ def generate_token(user, operation, expire_in = None, **kwargs):
 '''
     验证令牌
 '''
-def validate_token(user, token, operaion, new_password=None):
+def validate_token(user, token, operation, new_password=None):
     s = Serializer(current_app.config['SECRET_KEY'])
     try:
         data = s.loads(token)
     except(BadSignature, SignatureExpired):
         return False
-    if operaion != data.get('operation') or user.id != data.get('id'):
+    if operation != data.get('operation') or user.id != data.get('id'):
         return False
-    if operaion == operations['confirm']:
+    if operation == operations['confirm']:
         user.active = True                          #验证通过激活用户
-    elif operaion == operations['reset_password']:
+    elif operation == operations['reset_password']:
         user.set_password(new_password)             #重置密码
     else:
         return False
