@@ -25,3 +25,14 @@ class LoginForm(FlaskForm):
     password = PasswordField('密码',validators=[DataRequired('请输入密码!'),Length(8, 128, '长度要介于(8-128)')])
     remember = BooleanField('记住我')
     submit = SubmitField('登录')
+
+# 重置密码请求表单
+class ResetPasswordForm(FlaskForm):
+    email = StringField('邮箱', validators=[DataRequired('请输入邮箱!!!'), Length(1, 64, '长度要介于1~64!!!'), Email('邮箱格式不正确!!!')])
+    submit = SubmitField('重置')
+# 重置密码执行表单
+class ChangePasswordForm(FlaskForm):
+    email = StringField('邮箱', validators=[DataRequired('请输入邮箱!!!'), Length(1, 64, '长度要介于1~64!!!'), Email('邮箱格式不正确!!!')])
+    password = PasswordField('新密码', validators=[DataRequired('请输入密码!!!'), Length(8, 128, '长度要介于8~128!!!'), EqualTo('password_confirm', message='密码不一致!!!')])
+    password_confirm = PasswordField('确认新密码', validators=[DataRequired('请确认密码!!!')])
+    submit = SubmitField('重置')

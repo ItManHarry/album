@@ -12,7 +12,7 @@ class GlobalSetting():
     BOOTSTRAP_SERVE_LOCAL = True                                            #Bootstrap本地化
     ITEM_COUNT_PER_PAGE = 10                                                #分页显示:每页的数量
     MAIL_SERVER = 'krrelay.corp.doosan.com'                                 #邮箱服务器
-    MAIL_DEFAULT_SENDER = ('Notice of system', 'notice_cn@doosan.com')      #默认发件人
+    MAIL_DEFAULT_SENDER = ('Notice of system', 'guoqian.cheng@doosan.com')      #默认发件人
     MAIL_SUJECT_PREFIX = '[Album]'
 class DevelopSetting(GlobalSetting):
     # 数据库配置
@@ -29,6 +29,6 @@ config = {
 }
 operations = {
     'confirm':'confirm',
-    'reset_passwork':'reset_passwork',
+    'reset_password':'reset_password',
     'change_email':'change_email'
 }
