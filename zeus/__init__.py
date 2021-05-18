@@ -1,7 +1,7 @@
 from flask import Flask,render_template
 from flask_wtf.csrf import CSRFError
 from zeus.settings import config
-from zeus.extensions import bootstrap,moment,mail,ckeditor,db,migrate,csrf,login_manager
+from zeus.extensions import bootstrap,moment,mail,ckeditor,db,migrate,csrf,login_manager,dropzone
 import click
 import uuid
 #创建Flask实例
@@ -32,6 +32,7 @@ def register_web_extensions(app):
     migrate.init_app(app, db)
     login_manager.init_app(app)
     csrf.init_app(app)
+    dropzone.init_app(app)
 #配置全局路径
 def register_web_global_path(app):
     @app.route('/startup')
@@ -48,6 +49,9 @@ def register_web_errors(app):
     @app.errorhandler(400)
     def request_invalid(e):
         return render_template('errors/400.html'), 400
+    @app.errorhandler(403)
+    def request_invalid(e):
+        return render_template('errors/403.html'), 403
     @app.errorhandler(404)
     def page_not_found(e):
         return render_template('errors/404.html'), 404

@@ -1,29 +1,26 @@
 {% extends 'base.html' %}
 {% block title %}相册上传{% endblock %}
+{% block links %}
+    {{static_file('css','css/dropzone.min.css')}}
+{% endblock %}
+{% block scripts %}
+    {{static_file('js','js/dropzone.min.js')}}
+    {{dropzone.config()}}
+{% endblock %}
+{% block styles %}
+    {{ dropzone.style('margin:20px 0; border:2px dashed #0087f7; min-height:380px;')}}
+{% endblock %}
 {% block main %}
 <div class = "container-fluid">
     <div class="row">
-        <div class = "col-4 offset-4 text-center text-primary">
-            <span style = "font-size:72px;"><i class="fas fa-users"></i></span>
+        <div class = "col-md-12 text-primary">
+            <h4>上传</h4>
         </div>
     </div>
     <div class="row">
-        <div class = "col-6 offset-3">
-            {% if get_flashed_messages() %}
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                  {% for message in get_flashed_messages() %}
-                    <small>{{ message }}</small>
-                  {% endfor %}
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-    <div class="row">
-        <div class = "col-4 offset-4 text-center text-primary">
-            <h1>Do the image upload...</h1>
+        <div class = "col-md-12">
+            {{dropzone.create(action='main.upload')}}
+            <a class="btn btn-light float-right" href="#">Done</a>
         </div>
     </div>
 </div>

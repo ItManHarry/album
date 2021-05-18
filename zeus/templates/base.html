@@ -30,10 +30,10 @@
 <body>
     <header style="margin-top:20px;">
         {% block header %}
-            <div class="container">
+            <div class="container-fluid">
                 <div class="row">
                     <div class="col-8">
-                        <h1><a href = "{{ url_for('main.index') }}">电子相册</a></h1>
+                        <h1><a href = "{{ url_for('main.index') }}"><i class="fas fa-camera-retro"></i></a></h1>
                     </div>
                     <div class = "col-4 text-right">
                         <small>{{ get_time() }}</small>

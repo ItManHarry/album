@@ -7,8 +7,9 @@ from flask_moment import Moment
 from flask_mail import Mail
 from flask_ckeditor import CKEditor
 from flask_migrate import Migrate
-from flask_login import LoginManager
+from flask_login import LoginManager,AnonymousUserMixin
 from flask_wtf.csrf import CSRFProtect
+from flask_dropzone import Dropzone
 #创建扩展实例
 bootstrap = Bootstrap()
 db = SQLAlchemy()
@@ -29,3 +30,11 @@ def load_user(user_id):
     from zeus.models import User
     user = User.query.get(user_id)
     return user
+class Guest(AnonymousUserMixin):
+    @property
+    def is_admin(self):
+        return False
+    def permitted(self, permission_name):
+        return False
+login_manager.anonymous_user = Guest
+dropzone = Dropzone()

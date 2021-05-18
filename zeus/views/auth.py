@@ -108,6 +108,8 @@ def login():
                 login = Login(id=uuid.uuid4().hex,user_id=user.id)
                 db.session.add(login)
                 db.session.commit()
+                print('Is administrator >>>>>>>>>>>>>>>>>> : ', user.is_admin)
+                #print('Has [FOLLOW] permission ? ', user.permitted('FOLLOW'))
                 return redirect_back()
             else:
                 flash('密码错误!!!')
