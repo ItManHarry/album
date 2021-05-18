@@ -75,27 +75,32 @@ def register_web_command(app):
     @click.option('--username', prompt=True, help='用户账号.')
     @click.option('--password', prompt=True, hide_input=True, confirmation_prompt=True,help='用户密码.')
     def init(username, password):
-        from zeus.models import User
+        from zeus.models import User,Role,Permission,roles_permissions
         click.echo('执行数据库初始化......')
         db.create_all()
-        click.echo('数据库初始化完成！！！')
-        click.echo('创建默认用户')
+        click.echo('数据库初始化完成')
+        click.echo('生成系统角色权限......')
+        Role.init_role()
+        click.echo('系统角色权限已生成')
+        click.echo('创建系统管理员......')
         user = User.query.first()
         if user:
-            click.echo('已存在用户,跳过创建......')
+            click.echo('已存在管理员,跳过创建......')
         else:
-            click.echo('执行创建默认用户......')
+            click.echo('执行创建管理员......')
             user = User(
                 id = uuid.uuid4().hex,
                 code=username,
                 name = 'admin',
-                email = 'xxx@xxx.xxx',
-                website = 'http://xxx.xxx',
+                email = 'admin@album.com',
+                website = 'http://album.com',
                 bio = 'xxx',
                 location = 'xxx-xxx-xxx',
-                active=True
+                active=True,                                                        #默认激活
+                role_id = Role.query.filter_by(name='Administrator').first().id     #管理员角色
             )
             user.set_password(password)
             db.session.add(user)
         db.session.commit()
+        click.echo('管理员创建完成')
         click.echo('系统初始化完成......')

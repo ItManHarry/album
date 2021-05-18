@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, url_for, redirect, request,flash
 from flask_login import login_required, current_user,login_user,logout_user
 from zeus.forms.auth import RegisterForm, LoginForm,ResetPasswordForm,ChangePasswordForm
-from zeus.models import User,Login
+from zeus.models import User,Login,Role
 from zeus.extensions import db
 from zeus.tools import generate_token,validate_token,redirect_back
 from zeus.settings import operations
@@ -19,7 +19,8 @@ def register():
             email = form.email.data.lower(),
             website = form.website.data.lower(),
             location = form.location.data,
-            bio = ''
+            bio = '',
+            role_id = Role.query.filter_by(name='User').first().id  #普通用户
         )
         user.set_password(form.password.data)
         db.session.add(user)
