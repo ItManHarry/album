@@ -2,6 +2,7 @@
 <html lang="en">
 {# 显式地使用with context声明传人当前模板的上下文 #}
 {% from 'macros/macros.html' import static_file with context %}
+{% from 'bootstrap/nav.html' import render_nav_item  with context %}
 <head>
     {% block head %}
     <meta charset="UTF-8">
@@ -28,26 +29,40 @@
     {% endblock %}
 </head>
 <body>
-    <header style="margin-top:20px;">
+    <header>
         {% block header %}
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-8">
-                        <h1><a href = "{{ url_for('main.index') }}"><i class="fas fa-camera-retro"></i></a></h1>
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <div class = "container-fluid">
+                    <a class="navbar-brand" href="{{url_for('main.index')}}"><i class="fas fa-camera-retro"></i></a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                      <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarText">
+                      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                          {{ render_nav_item('main.index', '主页') }}
+                        </li>
+                        <li class="nav-item">
+                          {{ render_nav_item('main.upload', '上传') }}
+                        </li>
+                      </ul>
                     </div>
-                    <div class = "col-4 text-right">
-                        <small>{{ get_time() }}</small>
-                        {% if current_user.is_authenticated %}
-                            <a href="{{ url_for('auth.logout') }}" class="btn btn-link btn-sm"><i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;Logout</a>
-                        {% else %}
-                            <a href="{{ url_for('auth.login') }}" class="btn btn-link btn-sm"><i class="fas fa-sign-in-alt"></i>&nbsp;&nbsp;Login</a>
-                        {% endif %}
+                    <div class="row text-right">
+                        <div class="col-12">
+                            {% if current_user.is_authenticated %}
+                                <span class="navbar-text">
+                                    Welcome&nbsp;:&nbsp;{{ current_user.name|title }}
+                                </span>&nbsp;&nbsp;
+                                <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-success btn-sm"><i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;Logout</a>
+                            {% else %}
+                                <a href="{{ url_for('auth.login') }}" class="btn btn-outline-success btn-sm"><i class="fas fa-sign-in-alt"></i>&nbsp;&nbsp;Login</a>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-                <hr>
-            </div>
+            </nav>
         {% endblock %}
-    </header>
+    </header><br>
     <main>
         {% block main %}{% endblock %}
     </main>
