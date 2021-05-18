@@ -12,11 +12,11 @@ class GlobalSetting():
     BOOTSTRAP_SERVE_LOCAL = True                                            #Bootstrap本地化
     ITEM_COUNT_PER_PAGE = 10                                                #分页显示:每页的数量
     MAIL_SERVER = 'smtp.qq.com'                                             #邮箱服务器
-    MAIL_PORT=465                                                           #服务器端口
-    MAIL_USE_SSL=True                                                       #使用SSL
-    MAIL_USE_TLS=False                                                      #禁用TLS
-    MAIL_USERNAME='280688074@qq.com'                                        #邮箱账号
-    MAIL_PASSWORD=os.getenv('MAIL_PASSWORD')                                #邮箱授权码
+    MAIL_PORT = 465                                                           #服务器端口
+    MAIL_USE_SSL = True                                                       #使用SSL
+    MAIL_USE_TLS = False                                                      #禁用TLS
+    MAIL_USERNAME = '280688074@qq.com'                                        #邮箱账号
+    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')                                #邮箱授权码
     MAIL_DEFAULT_SENDER = ('Harry.Cheng', '280688074@qq.com')               # 默认发件人
     MAIL_SUJECT_PREFIX = '[Album]'
 class DevelopSetting(GlobalSetting):
