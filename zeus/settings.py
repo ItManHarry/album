@@ -16,8 +16,8 @@ class GlobalSetting():
     MAIL_USE_SSL=True                                                       #使用SSL
     MAIL_USE_TLS=False                                                      #禁用TLS
     MAIL_USERNAME='280688074@qq.com'                                        #邮箱账号
-    MAIL_DEFAULT_SENDER = ('Harry.Cheng', '280688074@qq.com')      #默认发件人
-    MAIL_PASSWORD='jzsvqvqeowadbhec'                                        #邮箱授权码
+    MAIL_PASSWORD=os.getenv('MAIL_PASSWORD')                                #邮箱授权码
+    MAIL_DEFAULT_SENDER = ('Harry.Cheng', '280688074@qq.com')               # 默认发件人
     MAIL_SUJECT_PREFIX = '[Album]'
 class DevelopSetting(GlobalSetting):
     # 数据库配置
