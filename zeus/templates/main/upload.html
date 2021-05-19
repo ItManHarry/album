@@ -8,7 +8,7 @@
     {{dropzone.config()}}
 {% endblock %}
 {% block styles %}
-    {{ dropzone.style('margin:20px 0; border:2px dashed #0087f7; min-height:380px;')}}
+    {{ dropzone.style('margin:20px 0; border:2px dashed #ccc; min-height:380px;')}}
 {% endblock %}
 {% block main %}
 <div class = "container-fluid">
@@ -20,7 +20,7 @@
     <div class="row">
         <div class = "col-md-12">
             {{dropzone.create(action='main.upload')}}
-            <a class="btn btn-outline-secondary float-right" href="#">已上传</a>
+            <a class="btn btn-outline-secondary float-right" href="{{ url_for('user.index', user_code=current_user.code) }}">Done</a>
         </div>
     </div>
 </div>

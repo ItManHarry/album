@@ -13,3 +13,13 @@
         <script type = "text/javascript" src = "{{file_or_url}}"></script>
     {% endif %}
 {% endmacro %}
+<!-- 图片显示 -->
+{% macro photo_card(photo) %}
+    <div class="card">
+      <img src="{{ url_for('main.get_photo', filename=photo.file_name_s) }}" class="card-img-top portrait">
+      <div class="card-body">
+        <i class="fas fa-star"></i>&nbsp;15&nbsp;&nbsp;
+        <i class="fas fa-comment"></i>&nbsp;10
+      </div>
+    </div>
+{% endmacro %}

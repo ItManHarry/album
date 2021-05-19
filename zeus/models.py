@@ -1,5 +1,6 @@
 from datetime import datetime
 from flask_login import UserMixin
+from flask_avatars import Identicon
 from zeus.extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
@@ -74,15 +75,27 @@ class User(db.Model, UserMixin):
     member_since = db.Column(db.DateTime, default=datetime.utcnow)  #注册时间
     active = db.Column(db.Boolean, default=False)                   #已激活
     role_id = db.Column(db.String(32), db.ForeignKey('role.id'))    #所属角色(角色外键)
+    avatar_s = db.Column(db.String(64))                             #小头像
+    avatar_m = db.Column(db.String(64))                             #中头像
+    avatar_l = db.Column(db.String(64))                             #大头像
     role = db.relationship('Role', back_populates='users')          #对应角色(反向关联)
     photos = db.relationship('Photo', back_populates='author',cascade='all')#上传图片(反向关联)
     logins = db.relationship('Login', back_populates='user', cascade='all') #登录履历(反向关联)
-    # 设置密码-使用werkzeug.security提供的加密方式
+    #设置密码-使用werkzeug.security提供的加密方式
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
-    # 校验密码
+    #校验密码
     def validate_password(self, password):
         return check_password_hash(self.password_hash, password)
+    #生成头像
+    def generate_avatars(self):
+        avatar = Identicon(cols=8,rows=8,bg_color=(0,0,0)) #自定义行列组成点数及图片背景色
+        #avatar = Identicon()
+        filenames = avatar.generate(text=self.name)
+        self.avatar_s = filenames[0]
+        self.avatar_m = filenames[1]
+        self.avatar_l = filenames[2]
+        db.session.commit()
     #是否管理员
     @property
     def is_admin(self):

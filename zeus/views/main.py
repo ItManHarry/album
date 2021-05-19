@@ -1,5 +1,5 @@
 import os.path
-from flask import Blueprint, render_template,current_app,request
+from flask import Blueprint, render_template,current_app,request,send_from_directory
 from flask_login import login_required,current_user
 from flask_dropzone import random_filename
 import uuid
@@ -34,3 +34,11 @@ def upload():
         db.session.add(photo)
         db.session.commit()
     return render_template('main/upload.html')
+#显示头像
+@bp_main.route('/avatar/<path:filename>')
+def get_avatar(filename):
+    return send_from_directory(current_app.config['AVATARS_SAVE_PATH'], filename)
+#显示图片
+@bp_main.route('/photo/<path:filename>')
+def get_photo(filename):
+    return send_from_directory(current_app.config['SYS_FILE_UPLOAD_PATH'], filename)

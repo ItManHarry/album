@@ -12,7 +12,8 @@ basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 class GlobalSetting():
     SECRET_KEY = os.getenv('SECRET_KEY', '123456789qwertyuiop!@$%asdfgh')   #秘钥 session用
     BOOTSTRAP_SERVE_LOCAL = True                                            #Bootstrap本地化
-    ITEM_COUNT_PER_PAGE = 10                                                #分页显示:每页的数量
+    ITEM_COUNT_PER_PAGE = 10                                                #表格分页显示:每页的数量
+    PHOTO_COUNT_PER_PAGE = 12                                               #图片分页显示:每页的数量
     MAIL_SERVER = 'smtp.qq.com'                                             #邮箱服务器
     MAIL_PORT = 465                                                         #服务器端口
     MAIL_USE_SSL = True                                                     #使用SSL
@@ -38,6 +39,8 @@ class GlobalSetting():
         ALBUM_IMG_SIZE['small']: '_s',  #缩略图
         ALBUM_IMG_SIZE['medium']: '_m'  #中等图
     }
+    AVATARS_SAVE_PATH = os.path.join(SYS_FILE_UPLOAD_PATH, 'avatars')       #头像存储路径
+    AVATARS_SIZE_TUPLE = (24,100,200)                                       #头像尺寸
 class DevelopSetting(GlobalSetting):
     # 数据库配置
     SQLALCHEMY_TRACK_MODIFICATIONS = False

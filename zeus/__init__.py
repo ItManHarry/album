@@ -1,7 +1,7 @@
 from flask import Flask,render_template,redirect,url_for
 from flask_wtf.csrf import CSRFError
 from zeus.settings import config
-from zeus.extensions import bootstrap,moment,mail,ckeditor,db,migrate,csrf,login_manager,dropzone
+from zeus.extensions import bootstrap,moment,mail,ckeditor,db,migrate,csrf,login_manager,dropzone,avatars
 import click
 import uuid
 #创建Flask实例
@@ -33,6 +33,7 @@ def register_web_extensions(app):
     login_manager.init_app(app)
     csrf.init_app(app)
     dropzone.init_app(app)
+    avatars.init_app(app)
 #配置全局路径
 def register_web_global_path(app):
     #系统主页
@@ -66,8 +67,10 @@ def register_web_errors(app):
 def register_web_views(app):
     from zeus.views.auth import bp_auth
     from zeus.views.main import bp_main
+    from zeus.views.user import bp_user
     app.register_blueprint(bp_auth, url_prefix='/auth')
     app.register_blueprint(bp_main, url_prefix='/main')
+    app.register_blueprint(bp_user, url_prefix='/user')
 #注册shell环境
 def register_web_shell(app):
     @app.shell_context_processor
@@ -95,17 +98,19 @@ def register_web_command(app):
             click.echo('执行创建管理员......')
             user = User(
                 id = uuid.uuid4().hex,
-                code=username,
+                code = username.lower(),
                 name = 'admin',
                 email = 'admin@album.com',
                 website = 'http://album.com',
-                bio = 'xxx',
-                location = 'xxx-xxx-xxx',
+                bio = 'If you want to do something, JUST DO IT!!!',
+                location = 'YanTai, ShanDong, China',
                 active=True,                                                        #默认激活
                 role_id = Role.query.filter_by(name='Administrator').first().id     #管理员角色
             )
             user.set_password(password)
             db.session.add(user)
         db.session.commit()
+        #生成头像
+        user.generate_avatars()
         click.echo('管理员创建完成')
         click.echo('系统初始化完成......')

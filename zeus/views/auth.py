@@ -25,12 +25,14 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
+        # 生成头像
+        user.generate_avatars()
         #生成令牌
         token = generate_token(user=user,operation=operations['confirm'])
         #发送账号激活邮件
         active_account_email(user, token)
         flash('注册成功,请在邮箱中点击激活账号,激活后登陆系统!!!')
-        return redirect(url_for('.login'))
+        return redirect(url_for('main.index'))
     return render_template('auth/register.html', form=form)
 @bp_auth.route('/confirm/<token>')
 @login_required

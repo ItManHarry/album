@@ -10,6 +10,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager,AnonymousUserMixin
 from flask_wtf.csrf import CSRFProtect
 from flask_dropzone import Dropzone
+from flask_avatars import Avatars
 #创建扩展实例
 bootstrap = Bootstrap()
 db = SQLAlchemy()
@@ -38,3 +39,4 @@ class Guest(AnonymousUserMixin):
         return False
 login_manager.anonymous_user = Guest
 dropzone = Dropzone()
+avatars = Avatars()

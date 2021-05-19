@@ -1,0 +1,29 @@
+<div class="row">
+  <div class="col-md-2">
+      <img src="{{ url_for('main.get_avatar', filename=user.avatar_l) }}" class="img-fluid rounded fluid-right">
+  </div>
+  <div class="col-md-10">
+    <h1>{{ user.code|title }}</h1><!--small class="text-muted">{{ user.name }}</small-->
+    {% if user.bio %}<p class="text-secondary">{{ user.bio }}</p>{% endif %}
+    <p>
+      {% if user.website %}
+        <i class="fas fa-link"></i>&nbsp;
+        <a href="{{ user.website }}" target="_blank">{{ user.website|truncate(30) }}</a>&nbsp;&nbsp;
+      {% endif %}
+      {% if user.location %}
+        <i class="fas fa-map-signs"></i>&nbsp;
+      <span class="text-secondary">{{ user.location }}</span>&nbsp;&nbsp;
+      {% endif %}
+      <i class="far fa-calendar-alt"></i>&nbsp;
+      <span class="text-secondary">加入时间&nbsp;&nbsp;{{ moment(user.member_since).format('LL') }}</span>
+    </p>
+  </div>
+</div><br>
+<div class="row">
+  <div class="col-md-12">
+    <ul class="nav nav-tabs">
+      {{ render_nav_item('user.index', '相册', user.photos|length, user_code=user.code) }}
+      {{ render_nav_item('main.upload', '上传') }}
+    </ul>
+  </div>
+</div>
