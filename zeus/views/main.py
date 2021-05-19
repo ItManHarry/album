@@ -34,11 +34,16 @@ def upload():
         db.session.add(photo)
         db.session.commit()
     return render_template('main/upload.html')
-#显示头像
+#显示头像(For Image_Src)
 @bp_main.route('/avatar/<path:filename>')
 def get_avatar(filename):
     return send_from_directory(current_app.config['AVATARS_SAVE_PATH'], filename)
-#显示图片
+#显示图片(For Image_Src)
 @bp_main.route('/photo/<path:filename>')
 def get_photo(filename):
     return send_from_directory(current_app.config['SYS_FILE_UPLOAD_PATH'], filename)
+#显示原图(For_Image_Show)
+@bp_main.route('/photo/show/<photo_id>')
+def show_photo(photo_id):
+    photo = Photo.query.get_or_404(photo_id)
+    return render_template('main/photo.html', photo=photo)
