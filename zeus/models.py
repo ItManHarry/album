@@ -107,6 +107,8 @@ class Photo(db.Model):
     id = db.Column(db.String(32), primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)     #上传时间
     description = db.Column(db.String(500))                         #图片描述
-    file_name = db.Column(db.String(64))                            #文件名
+    file_name = db.Column(db.String(64))                            #原图文件名
+    file_name_s = db.Column(db.String(64))                          #缩略图文件名
+    file_name_m = db.Column(db.String(64))                          #中等图文件名
     author_id = db.Column(db.String(32), db.ForeignKey('user.id'))  #上传人ID(外键)
     author = db.relationship('User', back_populates='photos')       #上传人(反向关联)

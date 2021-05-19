@@ -2,10 +2,11 @@ import os.path
 from flask import Blueprint, render_template,current_app,request
 from flask_login import login_required,current_user
 from flask_dropzone import random_filename
+import uuid
 from zeus.extensions import db
 from zeus.models import Photo
 from zeus.decorators import active_required,permission_required
-import uuid
+from zeus.tools import resize_image
 bp_main = Blueprint('main', __name__)
 #首页
 @bp_main.route('/index')
@@ -21,7 +22,15 @@ def upload():
         f = request.files.get('file')                                               #获取文件
         filename = random_filename(f.filename)                                      #重新生成文件名
         f.save(os.path.join(current_app.config['SYS_FILE_UPLOAD_PATH'], filename))  #执行上传
-        photo = Photo(id=uuid.uuid4().hex,file_name=filename,author=current_user._get_current_object()) #保存记录
+        file_name_s = resize_image(f, filename, 400)
+        file_name_m = resize_image(f, filename, 800)
+        photo = Photo(
+            id=uuid.uuid4().hex,
+            file_name=filename,
+            file_name_s = file_name_s,
+            file_name_m = file_name_m,
+            author = current_user._get_current_object()
+        )
         db.session.add(photo)
         db.session.commit()
     return render_template('main/upload.html')

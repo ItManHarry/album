@@ -1,4 +1,4 @@
-from flask import Flask,render_template
+from flask import Flask,render_template,redirect,url_for
 from flask_wtf.csrf import CSRFError
 from zeus.settings import config
 from zeus.extensions import bootstrap,moment,mail,ckeditor,db,migrate,csrf,login_manager,dropzone
@@ -35,9 +35,10 @@ def register_web_extensions(app):
     dropzone.init_app(app)
 #配置全局路径
 def register_web_global_path(app):
-    @app.route('/startup')
-    def startup():
-        return '<h1>System startup ...</h1>'
+    #系统主页
+    @app.route('/')
+    def index():
+        return redirect(url_for('main.index'))
 #注册全局变量/函数
 def register_web_global_context(app):
     from zeus.tools import get_time

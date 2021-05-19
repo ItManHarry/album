@@ -20,8 +20,8 @@ class GlobalSetting():
     MAIL_USERNAME = '280688074@qq.com'                                      #邮箱账号
     MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')                              #邮箱授权码
     MAIL_DEFAULT_SENDER = ('Harry.Cheng', '280688074@qq.com')               #默认发件人
-    MAIL_SUJECT_PREFIX = '[Album]'                                          #邮件Title前缀
-    SYS_FILE_UPLOAD_PATH=os.path.join(basedir, 'uploads')                   #文件上传路径
+    MAIL_SUBJECT_PREFIX = '[Album]'                                         #邮件Title前缀
+    SYS_FILE_UPLOAD_PATH = os.path.join(basedir, 'uploads')                 #文件上传路径
     DROPZONE_MAX_FILE_SIZE = 3                                              #Dropzone上传文件大小(3M)
     DROPZONE_MAX_FILES = 20                                                 #Dropzone上传文件最大数量
     MAX_CONTENT_LENGTH = 3 * 1024 * 1024                                    #Flask内置文件上传大小设置
@@ -33,6 +33,11 @@ class GlobalSetting():
     DROPZONE_SERVER_ERROR = '服务端错误!!!'
     DROPZONE_BROWSER_UNSUPPORTED = '浏览器不支持！！！'
     DROPZONE_MAX_FILE_EXCEED = '超出最大文件上传数量！！！'
+    ALBUM_IMG_SIZE = {'small': 400, 'medium': 800}                          #图片裁剪尺寸
+    ALBUM_IMG_SUFFIX = {
+        ALBUM_IMG_SIZE['small']: '_s',  #缩略图
+        ALBUM_IMG_SIZE['medium']: '_m'  #中等图
+    }
 class DevelopSetting(GlobalSetting):
     # 数据库配置
     SQLALCHEMY_TRACK_MODIFICATIONS = False

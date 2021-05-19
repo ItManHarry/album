@@ -7,6 +7,9 @@ import time
 from urllib.parse import urlparse,urljoin
 from zeus.settings import operations
 from zeus.extensions import db
+import PIL
+from PIL import Image
+import os
 #获取当前时间
 def get_time():
     return 'Now is : %s' %time.strftime('%Y年%m月%d日')
@@ -51,3 +54,17 @@ def validate_token(user, token, operation, new_password=None):
         return False
     db.session.commit()
     return True
+'''
+    图片裁剪    
+'''
+def resize_image(image, file_name, base_width):
+    file_name, ext = os.path.splitext(file_name) #获取文件名和文件扩展名
+    img = Image.open(image)
+    if img.size[0] <= base_width:
+        return file_name + ext
+    w_percent = (base_width / float(img.size[0]))
+    h_size = int((float(img.size[1]) * float(w_percent)))
+    img = img.resize((base_width, h_size), PIL.Image.ANTIALIAS)
+    file_name += current_app.config['ALBUM_IMG_SUFFIX'][base_width] + ext
+    img.save(os.path.join(current_app.config['SYS_FILE_UPLOAD_PATH'], file_name), optimize=True, quality=85)
+    return file_name
