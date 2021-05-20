@@ -13,10 +13,10 @@
         <script type = "text/javascript" src = "{{file_or_url}}"></script>
     {% endif %}
 {% endmacro %}
-<!-- 图片显示 -->
-{% macro photo_card(photo) %}
+<!-- 图片显示:photo:图片信息;from_path:点击路径(主页点击还是个人中心点击) -->
+{% macro photo_card(photo, from_path) %}
     <div class="card">
-      <a href="{{ url_for('main.show_photo', photo_id=photo.id) }}"><img src="{{ url_for('main.get_photo', filename=photo.file_name_s) }}" class="card-img-top portrait"></a>
+      <a href="{{ url_for('main.show_photo', from_path=from_path, photo_id=photo.id) }}"><img src="{{ url_for('main.get_photo', filename=photo.file_name_s) }}" class="card-img-top portrait"></a>
       <div class="card-body text-info">
         <i class="fas fa-star"></i>&nbsp;{{photo.star}}&nbsp;&nbsp;
         <i class="fas fa-comment"></i>&nbsp;{{photo.comments|length}}

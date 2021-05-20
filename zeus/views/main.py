@@ -46,25 +46,41 @@ def get_avatar(filename):
 @bp_main.route('/photo/<path:filename>')
 def get_photo(filename):
     return send_from_directory(current_app.config['SYS_FILE_UPLOAD_PATH'], filename)
-#显示原图(For_Image_Show)
-@bp_main.route('/photo/show/<photo_id>')
-def show_photo(photo_id):
+'''
+    查看图片
+    from_path:点击来源(主页/个人中心)
+    photo_id:图片ID
+'''
+@bp_main.route('/photo/show/<from_path>/<photo_id>')
+def show_photo(from_path, photo_id):
     photo = Photo.query.get_or_404(photo_id)
+    author = photo.author
     # 获取所有的图片
-    ids = get_all_photo_ids(photo.author)
+    if from_path == 'home':             #主页点击则获取所有用户上传的图片
+        ids = get_all_photo_ids()
+    if from_path == 'personal':         #个人中心点击则获取当前用户上传的所有图片
+        ids = get_all_photo_ids(photo.author)
     photo_index = ids.index(photo_id)
     sign = ''   #标识是否是第一张或最后一张
     if photo_index == 0:
         sign = 'first'
     if photo_index == len(ids)-1:
         sign = 'last'
-    return render_template('main/photo.html', photo=photo, sign=sign, user=current_user)
-#上一张/下一张图片
-@bp_main.route('/photo/<sign>/<photo_id>')
-def switch_photo(sign, photo_id):
+    return render_template('main/photo.html', photo=photo, sign=sign, user=author, from_path=from_path)
+'''
+    上一张/下一张图片
+    from_path:点击来源(主页/个人中心)
+    sign:切换标识(上一页:previous,下一页:next)
+    photo_id:图片ID
+'''
+@bp_main.route('/photo/<from_path>/<sign>/<photo_id>')
+def switch_photo(from_path, sign, photo_id):
     current_photo = Photo.query.get_or_404(photo_id)
     # 获取所有的图片ID
-    ids = get_all_photo_ids(current_photo.author)
+    if from_path == 'home':  # 主页点击则获取所有用户上传的图片
+        ids = get_all_photo_ids()
+    if from_path == 'personal':  # 个人中心点击则获取当前用户上传的所有图片
+        ids = get_all_photo_ids(current_photo.author)
     current_photo_index = ids.index(photo_id)
     #上一张
     if sign == 'previous' and current_photo_index != 0:
@@ -72,10 +88,13 @@ def switch_photo(sign, photo_id):
     #下一张
     if sign == 'next' and current_photo_index != len(ids)-1:
         photo_id = ids[current_photo_index+1]
-    return redirect(url_for('.show_photo', photo_id=photo_id))
+    return redirect(url_for('.show_photo', from_path=from_path, photo_id=photo_id))
 #获取当前用户所有图片ID
-def get_all_photo_ids(author):
-    photos = Photo.query.with_parent(author).order_by(Photo.timestamp.desc()).all()
+def get_all_photo_ids(author=None):
+    if author is None:  #获取所有用户上传的图片
+        photos = Photo.query.order_by(Photo.timestamp.desc()).all()
+    else:               #获取当前用户上传的图片
+        photos = Photo.query.with_parent(author).order_by(Photo.timestamp.desc()).all()
     ids = []
     for photo in photos:
         ids.append(photo.id)

@@ -15,13 +15,13 @@
     {% include 'user/_header.html' %}<br>
     <div class="row">
         <div class = "col-md-2 text-center">
-            <a href="{{ url_for('main.switch_photo', photo_id=photo.id, sign='previous') }}" class="btn btn-outline-secondary {%if sign=='first'%}disabled{%endif%}"><i class="fas fa-chevron-left"></i></a>
+            <a href="{{ url_for('main.switch_photo', from_path=from_path, photo_id=photo.id, sign='previous') }}" class="btn btn-outline-secondary {%if sign=='first'%}disabled{%endif%}"><i class="fas fa-chevron-left"></i></a>
         </div>
         <div class = "col-md-8 text-center">
             <img src="{{ url_for('main.get_photo', filename=photo.file_name) }}" class="img-fluid">
         </div>
          <div class = "col-md-2 text-center">
-             <a href="{{ url_for('main.switch_photo', photo_id=photo.id, sign='next') }}" class="btn btn-outline-secondary {%if sign=='last'%}disabled{%endif%}"><i class="fas fa-chevron-right"></i></a>
+             <a href="{{ url_for('main.switch_photo', from_path=from_path, photo_id=photo.id, sign='next') }}" class="btn btn-outline-secondary {%if sign=='last'%}disabled{%endif%}"><i class="fas fa-chevron-right"></i></a>
         </div>
     </div>
     <form id = 'delform' action="{{ url_for('user.delete', photo_id=photo.id) }}" method="post">

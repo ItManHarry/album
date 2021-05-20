@@ -19,6 +19,8 @@
     </p>
   </div>
 </div><br>
+<!-- 必须同时满足用户已登录同时登录用户和照片是同一个用户才能出现以下菜单,否则显示一横线 -->
+{% if from_path == 'personal' %}
 <div class="row">
   <div class="col-md-12">
     <ul class="nav nav-tabs">
@@ -31,3 +33,6 @@
     </ul>
   </div>
 </div>
+{% else %}
+  <hr>
+{% endif %}

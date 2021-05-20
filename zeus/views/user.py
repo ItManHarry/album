@@ -10,7 +10,7 @@ def index(user_code):
     per_page = current_app.config['PHOTO_COUNT_PER_PAGE']
     pagination = Photo.query.with_parent(user).order_by(Photo.timestamp.desc()).paginate(page, per_page)
     photos = pagination.items
-    return render_template('user/index.html', user=user, photos=photos, pagination=pagination)
+    return render_template('user/index.html', user=user, photos=photos, pagination=pagination, from_path='personal')
 @bp_user.route('/photo/delete/<photo_id>', methods=['POST'])
 def delete(photo_id):
     from zeus.views.main import get_all_photo_ids
@@ -35,4 +35,4 @@ def delete(photo_id):
     ids = get_all_photo_ids(author)
     if len(ids) == 0:
         return redirect(url_for('.index', user_code=photo.author.code))
-    return redirect(url_for('main.show_photo', photo_id=photo_id))
+    return redirect(url_for('main.show_photo', from_path='personal', photo_id=photo_id))
