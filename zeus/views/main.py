@@ -11,7 +11,11 @@ bp_main = Blueprint('main', __name__)
 #首页
 @bp_main.route('/index')
 def index():
-    return render_template('main/index.html')
+    page = request.args.get('page', 1, type=int)
+    per_page = current_app.config['HOME_PHOTO_COUNT_PER_PAGE']
+    pagination = Photo.query.order_by(Photo.timestamp.desc()).paginate(page, per_page)
+    photos = pagination.items
+    return render_template('main/index.html', photos=photos, pagination=pagination)
 #图片上传
 @bp_main.route('/upload', methods=['GET','POST'])
 @login_required                   #是否登录

@@ -13,7 +13,8 @@ class GlobalSetting():
     SECRET_KEY = os.getenv('SECRET_KEY', '123456789qwertyuiop!@$%asdfgh')   #秘钥 session用
     BOOTSTRAP_SERVE_LOCAL = True                                            #Bootstrap本地化
     ITEM_COUNT_PER_PAGE = 10                                                #表格分页显示:每页的数量
-    PHOTO_COUNT_PER_PAGE = 12                                               #图片分页显示:每页的数量
+    PHOTO_COUNT_PER_PAGE = 12                                               #图片分页显示:每页的数量(个人中心)
+    HOME_PHOTO_COUNT_PER_PAGE = 24                                          # 图片分页显示:每页的数量(网址首页)
     MAIL_SERVER = 'smtp.qq.com'                                             #邮箱服务器
     MAIL_PORT = 465                                                         #服务器端口
     MAIL_USE_SSL = True                                                     #使用SSL

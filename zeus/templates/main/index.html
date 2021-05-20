@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% from 'macros/macros.html' import photo_card with context %}
+{% from 'bootstrap/pagination.html' import render_pagination with context %}
 {% block title %}相册首页{% endblock %}
 {% block main %}
 <div class = "container-fluid">
@@ -16,10 +18,22 @@
             {% endif %}
         </div>
     </div>
-    <div class="row">
-        <div class = "col-4 offset-4 text-center text-primary">
-            <h1>Home</h1>
+    {% if photos %}
+        {{ render_pagination(pagination,align='right') }}
+        <div class="row">
+            {% for photo in photos %}
+                <div class="col-md-3">
+                    {{ photo_card(photo) }}
+                </div>
+            {% endfor %}
         </div>
-    </div>
+        {{ render_pagination(pagination,align='right') }}
+    {% else %}
+        <div class="row">
+            <div class="col-md-12 text-center">
+                  仍未上传任何图片!!!
+            </div>
+        </div>
+    {% endif %}
 </div>
 {%endblock%}
