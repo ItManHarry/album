@@ -125,6 +125,9 @@ class Photo(db.Model):
     file_name = db.Column(db.String(64))                            #原图文件名
     file_name_s = db.Column(db.String(64))                          #缩略图文件名
     file_name_m = db.Column(db.String(64))                          #中等图文件名
+    flag = db.Column(db.Integer)                                    #举报次数
+    star = db.Column(db.Integer)                                    #点赞次数
+    comments = db.relationship('Comment', back_populates='photo')   #图片评论
     author_id = db.Column(db.String(32), db.ForeignKey('user.id'))  #上传人ID(外键)
     author = db.relationship('User', back_populates='photos')       #上传人(反向关联)
 #图片数据删除后,执行图片文件删除
@@ -136,3 +139,11 @@ def delete_photo(**kwargs):
             file = os.path.join(current_app.config['SYS_FILE_UPLOAD_PATH'], file_name)
             if os.path.exists(file):
                 os.remove(file)
+'''
+    图片评论
+'''
+class Comment(db.Model):
+    id = db.Column(db.String(32), primary_key=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)     #评论时间
+    photo_id = db.Column(db.String(32), db.ForeignKey('photo.id'))  #图片ID(外键)
+    photo = db.relationship('Photo', back_populates='comments')     #图片(反向关联)
