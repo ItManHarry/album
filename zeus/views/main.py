@@ -1,5 +1,5 @@
 import os.path
-from flask import Blueprint, render_template,current_app,request,send_from_directory
+from flask import Blueprint, render_template,current_app,request,send_from_directory,redirect,url_for
 from flask_login import login_required,current_user
 from flask_dropzone import random_filename
 import uuid
@@ -46,4 +46,34 @@ def get_photo(filename):
 @bp_main.route('/photo/show/<photo_id>')
 def show_photo(photo_id):
     photo = Photo.query.get_or_404(photo_id)
-    return render_template('main/photo.html', photo=photo)
+    # 获取所有的图片
+    ids = get_all_photo_ids(photo.author)
+    photo_index = ids.index(photo_id)
+    sign = ''   #标识是否是第一张或最后一张
+    if photo_index == 0:
+        sign = 'first'
+    if photo_index == len(ids)-1:
+        sign = 'last'
+    return render_template('main/photo.html', photo=photo, sign=sign)
+#上一张/下一张图片
+@bp_main.route('/photo/<sign>/<photo_id>')
+def switch_photo(sign, photo_id):
+    current_photo = Photo.query.get_or_404(photo_id)
+    # 获取所有的图片ID
+    ids = get_all_photo_ids(current_photo.author)
+    current_photo_index = ids.index(photo_id)
+    #上一张
+    if sign == 'previous' and current_photo_index != 0:
+        photo_id = ids[current_photo_index-1]
+    #下一张
+    if sign == 'next' and current_photo_index != len(ids)-1:
+        photo_id = ids[current_photo_index+1]
+    return redirect(url_for('.show_photo', photo_id=photo_id))
+#获取当前用户所有图片ID
+def get_all_photo_ids(author):
+    photos = Photo.query.with_parent(author).order_by(Photo.timestamp.desc()).all()
+    ids = []
+    for photo in photos:
+        ids.append(photo.id)
+    print('Photo count is  : ', len(ids))
+    return ids
