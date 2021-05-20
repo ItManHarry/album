@@ -1,9 +1,11 @@
 from datetime import datetime
+from flask import current_app
 from flask_login import UserMixin
 from flask_avatars import Identicon
 from zeus.extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
+import os
 '''
     系统角色权限关联表(多对多)
 '''
@@ -125,3 +127,12 @@ class Photo(db.Model):
     file_name_m = db.Column(db.String(64))                          #中等图文件名
     author_id = db.Column(db.String(32), db.ForeignKey('user.id'))  #上传人ID(外键)
     author = db.relationship('User', back_populates='photos')       #上传人(反向关联)
+#图片数据删除后,执行图片文件删除
+@db.event.listens_for(Photo, 'after_delete', named=True)
+def delete_photo(**kwargs):
+    target = kwargs['target']
+    for file_name in [target.file_name, target.file_name_s, target.file_name_m]:
+        if file_name is not None:
+            file = os.path.join(current_app.config['SYS_FILE_UPLOAD_PATH'], file_name)
+            if os.path.exists(file):
+                os.remove(file)

@@ -24,7 +24,7 @@ class GlobalSetting():
     MAIL_SUBJECT_PREFIX = '[Album]'                                         #邮件Title前缀
     SYS_FILE_UPLOAD_PATH = os.path.join(basedir, 'uploads')                 #文件上传路径
     DROPZONE_MAX_FILE_SIZE = 3                                              #Dropzone上传文件大小(3M)
-    DROPZONE_MAX_FILES = 20                                                 #Dropzone上传文件最大数量
+    DROPZONE_MAX_FILES = 30                                                 #Dropzone上传文件最大数量
     MAX_CONTENT_LENGTH = 3 * 1024 * 1024                                    #Flask内置文件上传大小设置
     DROPZONE_ALLOWED_FILE_TYPE = 'image'                                    #Dropzone允许上传的文件类型
     DROPZONE_ENABLE_CSRF = True                                             #Dropzone上传启用CSRF令牌验证
