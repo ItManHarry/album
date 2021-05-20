@@ -17,7 +17,7 @@
     {% else %}
         <div class="row">
             <div class="col-md-12 text-center">
-                  仍未上传任何图片!!!<a class="btn btn-link btn-sm" href="{{ url_for('user.index', user_code=current_user.code) }}">去上传 &gt;&gt;&gt; </a>
+                  仍未上传任何图片!!!<a class="btn btn-link btn-sm" href="{{ url_for('main.upload') }}">去上传 &gt;&gt;&gt; </a>
             </div>
         </div>
     {% endif %}

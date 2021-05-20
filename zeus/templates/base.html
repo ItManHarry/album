@@ -69,12 +69,13 @@
         {% block footer %}{% endblock %}
     </footer>
     <script>
+        {# --------- 引入子页面JavaScritp变量 --------- #}
+        {% block variable %}{% endblock %}
+        {% block ready %}
         $(function(){
             //alert('base is ready')
         })
-        {# --------- 引入子页面JavaScritp变量 --------- #}
-        {% block variable %}{% endblock %}
-        {% block ready %}{% endblock %}
+        {% endblock %}
         {# --------- 引入子页面自己的JavaScript函数 --------- #}
         {% block function %}
         function allAlert(){

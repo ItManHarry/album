@@ -54,7 +54,7 @@ def show_photo(photo_id):
         sign = 'first'
     if photo_index == len(ids)-1:
         sign = 'last'
-    return render_template('main/photo.html', photo=photo, sign=sign)
+    return render_template('main/photo.html', photo=photo, sign=sign, user=current_user)
 #上一张/下一张图片
 @bp_main.route('/photo/<sign>/<photo_id>')
 def switch_photo(sign, photo_id):

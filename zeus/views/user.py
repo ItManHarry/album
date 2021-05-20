@@ -1,5 +1,6 @@
-from flask import Blueprint, request, render_template, current_app
+from flask import Blueprint, request, render_template, current_app,redirect,url_for
 from zeus.models import User, Photo
+from zeus.extensions import db
 bp_user = Blueprint('user', __name__)
 #个人中心
 @bp_user.route('/index/<user_code>')
@@ -10,3 +11,28 @@ def index(user_code):
     pagination = Photo.query.with_parent(user).order_by(Photo.timestamp.desc()).paginate(page, per_page)
     photos = pagination.items
     return render_template('user/index.html', user=user, photos=photos, pagination=pagination)
+@bp_user.route('/photo/delete/<photo_id>', methods=['POST'])
+def delete(photo_id):
+    from zeus.views.main import get_all_photo_ids
+    photo = Photo.query.get_or_404(photo_id)
+    author = photo.author
+    ids = get_all_photo_ids(author)
+    # 被删除图片index
+    index = ids.index(photo_id)
+    '''
+        此处做出判断:
+            1. 如果当前删除的是最后一张照片,删除后跳转至前一张照片
+            2. 否则跳转至下一张照片
+    '''
+    if index == len(ids)-1:
+        photo_id = ids[index-1]
+    else:
+        photo_id = ids[index+1]
+    # 执行删除
+    db.session.delete(photo)
+    db.session.commit()
+    # 重新获取图片数量,如果已全部删除,则跳转值个人中心
+    ids = get_all_photo_ids(author)
+    if len(ids) == 0:
+        return redirect(url_for('.index', user_code=photo.author.code))
+    return redirect(url_for('main.show_photo', photo_id=photo_id))

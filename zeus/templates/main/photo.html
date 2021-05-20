@@ -12,6 +12,7 @@
 {% endblock %}
 {% block main %}
 <div class = "container-fluid">
+    {% include 'user/_header.html' %}<br>
     <div class="row">
         <div class = "col-md-2 text-center">
             <a href="{{ url_for('main.switch_photo', photo_id=photo.id, sign='previous') }}" class="btn btn-outline-secondary {%if sign=='first'%}disabled{%endif%}"><i class="fas fa-chevron-left"></i></a>
@@ -23,5 +24,31 @@
              <a href="{{ url_for('main.switch_photo', photo_id=photo.id, sign='next') }}" class="btn btn-outline-secondary {%if sign=='last'%}disabled{%endif%}"><i class="fas fa-chevron-right"></i></a>
         </div>
     </div>
+    <form id = 'delform' action="{{ url_for('user.delete', photo_id=photo.id) }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    </form>
 </div>
 {%endblock%}
+{% block function %}
+    function delete_photo(){
+        $.confirm({
+            title: '提示!',
+            content: '确定要删除？',
+            boxWidth: '25%',
+            useBootstrap: false,
+            type: 'red',
+            typeAnimated: true,
+            buttons: {
+                cancel:{
+                    text:"取消"
+                },
+                confirm:{
+                    text:"确定",
+                    action:function () {
+                        $('#delform').submit()
+                    }
+                }
+            }
+        });
+    }
+{% endblock %}

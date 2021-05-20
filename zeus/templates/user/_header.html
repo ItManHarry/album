@@ -22,8 +22,12 @@
 <div class="row">
   <div class="col-md-12">
     <ul class="nav nav-tabs">
-      {{ render_nav_item('user.index', '相册', user.photos|length, user_code=user.code) }}
-      {{ render_nav_item('main.upload', '上传') }}
+      <a class="nav-link" href="{{ url_for('user.index', user_code=user.code) }}"><i class="fas fa-list"></i>&nbsp;相册&nbsp;<span class="badge badge-info">{{ user.photos|length }}</span></a>
+      <a class="nav-link" href="{{ url_for('main.upload') }}"><i class="fas fa-upload"></i>&nbsp;上传</a>
+      <!-- 图片详情页面显示删除 -->
+      {% if photo %}
+      <a class="nav-link" href="javascript:delete_photo()"><i class="fas fa-trash-alt"></i>&nbsp;删除</a>
+      {% endif %}
     </ul>
   </div>
 </div>

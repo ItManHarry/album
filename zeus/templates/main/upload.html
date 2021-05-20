@@ -20,7 +20,7 @@
     <div class="row">
         <div class = "col-md-12">
             {{dropzone.create(action='main.upload')}}
-            <a class="btn btn-outline-secondary float-right" href="{{ url_for('user.index', user_code=current_user.code) }}">Done</a>
+            <a class="btn btn-outline-secondary float-right" href="{{ url_for('user.index', user_code=current_user.code) }}">已上传</a>
         </div>
     </div>
 </div>
