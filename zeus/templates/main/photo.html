@@ -61,6 +61,22 @@
             {% endif %}
             {% if from_path == 'home' %}
             <!-- 评论表单 -->
+            {% if comments %}
+                <hr>
+                <div class="row text-left">
+                    <div class="col-md-12">
+                        <ul class="list-group">
+                        {% for comment in comments %}
+                            <li class="list-group-item">
+                                <small>{{ moment(comment.timestamp).format('LL')}}&nbsp;&nbsp;:&nbsp;&nbsp;</small><br>
+                                {{ comment.content }}
+                                <small class="float-right">{{ moment(comment.timestamp).fromNow(refresh=True)}}</small>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif%}
             <form method="post" id = "commentform">
                 {{comm_form.csrf_token }}
                 <div class="form-row text-left">

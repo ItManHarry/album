@@ -91,7 +91,7 @@ def show_photo(from_path, photo_id):
         db.session.commit()
         flash('描述保存成功!!!')
         return redirect(url_for('.show_photo', from_path=from_path, photo_id=photo_id))
-    return render_template('main/photo.html', photo=photo, sign=sign, user=author, from_path=from_path, desc_form=desc_form, comm_form=comm_form)
+    return render_template('main/photo.html', photo=photo, sign=sign, user=author, from_path=from_path, desc_form=desc_form, comm_form=comm_form, comments=photo.comments)
 '''
     上一张/下一张图片
     from_path:点击来源(主页/个人中心)
