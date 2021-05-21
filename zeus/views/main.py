@@ -1,12 +1,13 @@
 import os.path
-from flask import Blueprint, render_template,current_app,request,send_from_directory,redirect,url_for
+from flask import Blueprint, render_template,current_app,request,send_from_directory,redirect,url_for,flash
 from flask_login import login_required,current_user
 from flask_dropzone import random_filename
 import uuid
 from zeus.extensions import db
-from zeus.models import Photo
+from zeus.models import Photo, Comment
+from zeus.forms.main import PhotoForm, PhotoCommentForm
 from zeus.decorators import active_required,permission_required
-from zeus.tools import resize_image
+from zeus.tools import resize_image,redirect_back
 bp_main = Blueprint('main', __name__)
 #首页
 @bp_main.route('/index')
@@ -33,6 +34,8 @@ def upload():
             file_name=filename,
             file_name_s = file_name_s,
             file_name_m = file_name_m,
+            star = 0,
+            flag = 0,
             author = current_user._get_current_object()
         )
         db.session.add(photo)
@@ -51,7 +54,7 @@ def get_photo(filename):
     from_path:点击来源(主页/个人中心)
     photo_id:图片ID
 '''
-@bp_main.route('/photo/show/<from_path>/<photo_id>')
+@bp_main.route('/photo/show/<from_path>/<photo_id>', methods=['GET','POST'])
 def show_photo(from_path, photo_id):
     photo = Photo.query.get_or_404(photo_id)
     author = photo.author
@@ -61,12 +64,34 @@ def show_photo(from_path, photo_id):
     if from_path == 'personal':         #个人中心点击则获取当前用户上传的所有图片
         ids = get_all_photo_ids(photo.author)
     photo_index = ids.index(photo_id)
-    sign = ''   #标识是否是第一张或最后一张
+    sign = ''                           #标识是否是第一张或最后一张
     if photo_index == 0:
         sign = 'first'
     if photo_index == len(ids)-1:
         sign = 'last'
-    return render_template('main/photo.html', photo=photo, sign=sign, user=author, from_path=from_path)
+    '''
+        执行数据保存
+    '''
+    desc_form = PhotoForm()             # 描述表单
+    if from_path == 'personal' and request.method == 'GET':
+        desc_form.description.data = photo.description
+    comm_form = PhotoCommentForm()      # 评论表单
+    if from_path == 'home' and comm_form.validate_on_submit():
+        comment = Comment(
+            id=uuid.uuid4().hex,
+            content=comm_form.content.data,
+            photo_id=photo_id
+        )
+        db.session.add(comment)
+        db.session.commit()
+        flash('评论发表成功!!!')
+        return redirect(url_for('.show_photo', from_path=from_path, photo_id=photo_id))
+    if from_path == 'personal' and desc_form.validate_on_submit():
+        photo.description = desc_form.description.data
+        db.session.commit()
+        flash('描述保存成功!!!')
+        return redirect(url_for('.show_photo', from_path=from_path, photo_id=photo_id))
+    return render_template('main/photo.html', photo=photo, sign=sign, user=author, from_path=from_path, desc_form=desc_form, comm_form=comm_form)
 '''
     上一张/下一张图片
     from_path:点击来源(主页/个人中心)
@@ -89,6 +114,22 @@ def switch_photo(from_path, sign, photo_id):
     if sign == 'next' and current_photo_index != len(ids)-1:
         photo_id = ids[current_photo_index+1]
     return redirect(url_for('.show_photo', from_path=from_path, photo_id=photo_id))
+#点赞图片
+@bp_main.route('/photo/star/<photo_id>')
+def star_photo(photo_id):
+    photo = Photo.query.get_or_404(photo_id)
+    stars = 0 if photo.star == None else photo.star
+    photo.star = stars + 1
+    db.session.commit()
+    return redirect_back()
+#举报图片
+@bp_main.route('/photo/report/<photo_id>')
+def report_photo(photo_id):
+    photo = Photo.query.get_or_404(photo_id)
+    flags = 0 if photo.flag == None else photo.flag
+    photo.flag = flags + 1
+    db.session.commit()
+    return redirect_back()
 #获取当前用户所有图片ID
 def get_all_photo_ids(author=None):
     if author is None:  #获取所有用户上传的图片

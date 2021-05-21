@@ -145,5 +145,6 @@ def delete_photo(**kwargs):
 class Comment(db.Model):
     id = db.Column(db.String(32), primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)     #评论时间
+    content = db.Column(db.Text)                                    #评论内容
     photo_id = db.Column(db.String(32), db.ForeignKey('photo.id'))  #图片ID(外键)
     photo = db.relationship('Photo', back_populates='comments')     #图片(反向关联)

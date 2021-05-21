@@ -1,6 +1,7 @@
 from flask import Blueprint, request, render_template, current_app,redirect,url_for
 from zeus.models import User, Photo
 from zeus.extensions import db
+from zeus.forms.main import PhotoForm
 bp_user = Blueprint('user', __name__)
 #个人中心
 @bp_user.route('/index/<user_code>')

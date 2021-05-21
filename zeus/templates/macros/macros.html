@@ -17,9 +17,16 @@
 {% macro photo_card(photo, from_path) %}
     <div class="card">
       <a href="{{ url_for('main.show_photo', from_path=from_path, photo_id=photo.id) }}"><img src="{{ url_for('main.get_photo', filename=photo.file_name_s) }}" class="card-img-top portrait"></a>
-      <div class="card-body text-info">
-        <i class="fas fa-star"></i>&nbsp;{{photo.star}}&nbsp;&nbsp;
-        <i class="fas fa-comment"></i>&nbsp;{{photo.comments|length}}
+      <div class="card-body">
+        {% if from_path == 'home' %}
+        <a href = "{{ url_for('main.star_photo', photo_id=photo.id, next=request.full_path) }}" class="btn btn-link text-info"><i class="fas fa-star"></i>&nbsp;{%if photo.star == None %}0{%else%}{{photo.star}}{%endif%}&nbsp;&nbsp;</a>
+        {% else %}
+        <a href = "#" class="btn btn-link text-info disabled"><i class="fas fa-star"></i>&nbsp;{%if photo.star == None %}0{%else%}{{photo.star}}{%endif%}&nbsp;&nbsp;</a>
+        {% endif %}
+        <a href = "#" class="btn btn-link text-info disabled"><i class="fas fa-comment"></i>&nbsp;{{photo.comments|length}}&nbsp;&nbsp;</a>
+        {% if from_path == 'home' %}
+        <a href = "{{ url_for('main.report_photo', photo_id=photo.id, next=request.full_path) }}" class="btn btn-link text-danger"><i class="fas fa-hand-pointer"></i>&nbsp;{% if photo.flag == None %}0{% else %}{{photo.flag}}{% endif %}&nbsp;&nbsp;</a>
+        {% endif %}
       </div>
     </div>
 {% endmacro %}
