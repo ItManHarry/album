@@ -6,7 +6,7 @@ from zeus.extensions import db
 from zeus.tools import generate_token,validate_token,redirect_back
 from zeus.settings import operations
 from zeus.emails import active_account_email,reset_password_email
-import uuid
+import uuid,time,datetime
 bp_auth = Blueprint('auth', __name__)
 @bp_auth.route('/register', methods=['GET','POST'])
 def register():
@@ -20,6 +20,7 @@ def register():
             website = form.website.data.lower(),
             location = form.location.data,
             bio = '',
+            birth=form.birthday.data,
             role_id = Role.query.filter_by(name='User').first().id  #普通用户
         )
         user.set_password(form.password.data)
@@ -123,3 +124,13 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('main.index'))
+#For Test
+date_str = ''
+date = None
+if date_str != '':
+    format = '%Y-%m-%d'
+    time_tuple = time.strptime(date_str, format)
+    print('Time tuple is : ', time_tuple)
+    year, month, day = time_tuple[:3]
+    date = datetime.date(year, month, day)
+#print('Date is : ', date)

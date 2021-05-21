@@ -1,5 +1,5 @@
 from flask_wtf import  FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField,DateField
 from wtforms.validators import DataRequired,Length,Email,Regexp,EqualTo
 from wtforms import ValidationError
 from zeus.models import User
@@ -12,6 +12,7 @@ class RegisterForm(FlaskForm):
     email = StringField('邮箱', validators=[DataRequired('请输入邮箱!!!'), Length(1,64,'长度要介于1~64!!!'), Email('邮箱格式不正确!!!')])
     website = StringField('个人网址')
     location = StringField('地址')
+    birthday = DateField('生日', validators=[DataRequired('请输入生日!!!')])
     submit = SubmitField('注册')
     def validate_email(self, field):
         if User.query.filter_by(email=field.data.lower()).first():

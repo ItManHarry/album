@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 {% block title %}用户注册{% endblock %}
+{% block links %}
+    {{static_file('css','css/bootstrap-datepicker3.min.css')}}
+{% endblock %}
+{% block scripts %}
+    {{static_file('js','js/bootstrap-datepicker.min.js')}}
+    {{static_file('js','js/bootstrap-datepicker.zh-CN.min.js')}}
+{% endblock %}
 {% block main %}
 <div class = "container-fluid">
     <!--div class="row">
@@ -66,10 +73,19 @@
               </div>
             </div>
             <div class="form-row">
-              <div class="form-group  col-md-12">
+              <div class="form-group  col-md-6">
                     <span class="text-danger">*</span>&nbsp;{{form.email.label}}
                     {{form.email(class='form-control')}}
                     {% for message in form.email.errors %}
+                        <small class="text-danger">
+                            {{ message }}
+                        </small>
+                    {% endfor %}
+              </div>
+              <div class="form-group  col-md-6">
+                    <span class="text-danger">*</span>&nbsp;{{form.birthday.label}}
+                    {{form.birthday(class='form-control')}}
+                    {% for message in form.birthday.errors %}
                         <small class="text-danger">
                             {{ message }}
                         </small>
@@ -103,3 +119,16 @@
     </div>
 </div>
 {%endblock%}
+<script>
+    {% block ready %}
+        $(function(){
+            $('#birthday').datepicker({
+                weekStart: 1,
+                autoclose: true,
+                daysOfWeekHighlighted: "0,6",
+                format: "yyyy-mm-dd",
+                language: "zh-CN"
+            })
+        })
+    {% endblock %}
+</script>

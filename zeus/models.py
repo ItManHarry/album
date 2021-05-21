@@ -71,6 +71,7 @@ class User(db.Model, UserMixin):
     name = db.Column(db.String(30))                                 #昵称
     password_hash = db.Column(db.String(128))                       #密码
     email = db.Column(db.String(254), unique=True, index=True)      #邮箱
+    birth = db.Column(db.Date)                                      #生日
     website = db.Column(db.String(255))                             #个人主页
     bio = db.Column(db.String(120))                                 #？？？
     location = db.Column(db.String(50))                             #地址
