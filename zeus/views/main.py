@@ -4,8 +4,8 @@ from flask_login import login_required,current_user
 from flask_dropzone import random_filename
 import uuid
 from zeus.extensions import db
-from zeus.models import Photo, Comment
-from zeus.forms.main import PhotoForm, PhotoCommentForm
+from zeus.models import Photo, Comment,Tag
+from zeus.forms.main import PhotoForm, PhotoCommentForm, PhotoTagForm
 from zeus.decorators import active_required,permission_required
 from zeus.tools import resize_image,redirect_back
 bp_main = Blueprint('main', __name__)
@@ -73,6 +73,7 @@ def show_photo(from_path, photo_id):
         执行数据保存
     '''
     desc_form = PhotoForm()             # 描述表单
+    tag_form = PhotoTagForm()           #标签表单
     if from_path == 'personal' and request.method == 'GET':
         desc_form.description.data = photo.description
     comm_form = PhotoCommentForm()      # 评论表单
@@ -91,7 +92,33 @@ def show_photo(from_path, photo_id):
         db.session.commit()
         flash('描述保存成功!!!')
         return redirect(url_for('.show_photo', from_path=from_path, photo_id=photo_id))
-    return render_template('main/photo.html', photo=photo, sign=sign, user=author, from_path=from_path, desc_form=desc_form, comm_form=comm_form, comments=photo.comments)
+    if from_path == 'personal' and tag_form.validate_on_submit():
+        for name in tag_form.tag.data.split(' '):
+            tag = Tag.query.filter_by(name=name.strip()).first()
+            if tag is None:
+                tag = Tag(id=uuid.uuid4().hex,name=name.strip())
+                db.session.add(tag)
+                db.session.commit()
+            if tag not in photo.tags:   #没有关联的进行关联
+                photo.tags.append(tag)
+                db.session.commit()
+        flash('标签保存成功!!!')
+        return redirect(url_for('.show_photo', from_path=from_path, photo_id=photo_id))
+    return render_template('main/photo.html', photo=photo, sign=sign, user=author, from_path=from_path, desc_form=desc_form, comm_form=comm_form, comments=photo.comments, tag_form=tag_form, tags=photo.tags)
+'''
+    删除标签
+'''
+@bp_main.route('/photo/tag/<photo_id>/<tag_id>', methods=['POST'])
+def del_tag(photo_id, tag_id):
+    photo = Photo.query.get_or_404(photo_id)
+    tag = Tag.query.get_or_404(tag_id)
+    photo.tags.remove(tag)
+    db.session.commit()
+    if not tag.photos:
+        db.session.delete(tag)
+        db.session.commit()
+    flash('标签已移除!!!')
+    return redirect(url_for('.show_photo', from_path='personal', photo_id=photo_id))
 '''
     上一张/下一张图片
     from_path:点击来源(主页/个人中心)

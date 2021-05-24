@@ -33,6 +33,28 @@
         </div>
         <div class = "col-md-8 text-center">
             <img src="{{ url_for('main.get_photo', filename=photo.file_name) }}" class="img-fluid">
+            <!-- 显示标签 -->
+            {% if tags %}
+                <div class="row text-right" style="margin:20px 0 20px 0;padding:0px;">
+                    <div class="col-md-1"><span class="text-success"><i class="fas fa-tags"></i>&nbsp;:&nbsp;</span></div>
+                    {% for tag in tags %}
+                        <div class="col-md-3">
+                            <span class="text-success">
+                                {% if from_path == 'personal' %}
+                                    <form method="post" action="{{ url_for('main.del_tag', photo_id=photo.id, tag_id=tag.id) }}">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                        <input type="hidden" name="photo_id" value="{{ photo.id }}"/>
+                                        <input type="hidden" name="tag_id" value="{{ tag.id }}"/>
+                                        {{tag.name}}<button type="submit" class="btn btn-link text-secondary btn-sm"><i class="fas fa-times-circle"></i></button>
+                                    </form>
+                                {% else %}
+                                    {{tag.name}}
+                                {% endif %}
+                                </span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
             <!-- 删除表单 -->
             <form id = 'delform' action="{{ url_for('user.delete', photo_id=photo.id) }}" method="post">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
@@ -102,6 +124,38 @@
              <a href="{{ url_for('main.switch_photo', from_path=from_path, photo_id=photo.id, sign='next') }}" class="btn btn-outline-secondary {%if sign=='last'%}disabled{%endif%}"><i class="fas fa-chevron-right"></i></a>
         </div>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="tagFormModal" tabindex="-1" aria-labelledby="tagFormModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="tagFormModalLabel">照片标签</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form method="post" id = "tagform">
+                {{tag_form.csrf_token }}
+                <div class="form-row text-left">
+                  <div class="form-group col-md-12">
+                      {{tag_form.tag.label}}
+                      {{tag_form.tag(class='form-control')}}
+                      {% for message in tag_form.tag.errors %}
+                            <small class="text-danger">
+                                {{ message }}
+                            </small>
+                      {% endfor %}
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-12">
+                    {{tag_form.submit(class='btn btn-outline-info btn-block')}}
+                  </div>
+                </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 </div>
 {%endblock%}
 {% block function %}
@@ -125,5 +179,8 @@
                 }
             }
         });
+    }
+    function edit_tag(){
+        $("#tagFormModal").modal('show')
     }
 {% endblock %}

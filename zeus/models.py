@@ -14,6 +14,13 @@ roles_permissions = db.Table('roles_permissions',
     db.Column('permission_id', db.String(32), db.ForeignKey('permission.id'))
 )
 '''
+    图片标签关联表(多对多)
+'''
+photos_tags = db.Table('photos_tags',
+    db.Column('photo_id', db.String(32), db.ForeignKey('photo.id')),
+    db.Column('tag_id', db.String(32), db.ForeignKey('tag.id'))
+)
+'''
     系统角色
     - 访客(Guest) : 仅可访问页面
     - 被禁用户(Forbidden) : 仅可访问页面
@@ -129,6 +136,7 @@ class Photo(db.Model):
     flag = db.Column(db.Integer)                                    #举报次数
     star = db.Column(db.Integer)                                    #点赞次数
     comments = db.relationship('Comment', back_populates='photo')   #图片评论
+    tags = db.relationship('Tag', secondary=photos_tags, back_populates='photos')#图片标签
     author_id = db.Column(db.String(32), db.ForeignKey('user.id'))  #上传人ID(外键)
     author = db.relationship('User', back_populates='photos')       #上传人(反向关联)
 #图片数据删除后,执行图片文件删除
@@ -149,3 +157,10 @@ class Comment(db.Model):
     content = db.Column(db.Text)                                    #评论内容
     photo_id = db.Column(db.String(32), db.ForeignKey('photo.id'))  #图片ID(外键)
     photo = db.relationship('Photo', back_populates='comments')     #图片(反向关联)
+'''
+    图片标签
+'''
+class Tag(db.Model):
+    id = db.Column(db.String(32), primary_key=True)
+    name = db.Column(db.String(30), index = True)                                   #标签名称
+    photos = db.relationship('Photo', secondary=photos_tags, back_populates='tags') #关联图片
