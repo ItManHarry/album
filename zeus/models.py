@@ -91,6 +91,7 @@ class User(db.Model, UserMixin):
     role = db.relationship('Role', back_populates='users')          #对应角色(反向关联)
     photos = db.relationship('Photo', back_populates='author',cascade='all')#上传图片(反向关联)
     logins = db.relationship('Login', back_populates='user', cascade='all') #登录履历(反向关联)
+    collections = db.relationship('Collect', back_populates='collector', cascade='all')#收藏图片
     #设置密码-使用werkzeug.security提供的加密方式
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -114,6 +115,34 @@ class User(db.Model, UserMixin):
     def permitted(self, permission_name):
         permission = Permission.query.filter_by(name=permission_name).first()
         return permission is not None and self.role is not None and permission in self.role.permissions
+    #收藏图片
+    def collect(self, photo):
+        if not self.has_collected(photo) and self != photo.author:
+            collect = Collect(collector=self, collected=photo)
+            db.session.add(collect)
+            db.session.commit()
+    #取消收藏
+    def uncollect(self, photo):
+        collect = Collect.query.filter_by(collector_id=self.id).filter_by(collected_id=photo.id).first()
+        if collect:
+            db.session.delete(collect)
+            db.session.commit()
+    #判断图片是否已收藏
+    def has_collected(self, photo):
+        if len(self.collections) == 0:
+            return False
+        collected_ids = []
+        for collect in self.collections:
+            collected_ids.append(collect.collected_id)
+        index = 0
+        try:
+            index = collected_ids.index(photo.id)
+        except ValueError:
+            index = -1
+        if index >= 0:
+            return True
+        else:
+            return False
 '''
     登录履历
 '''
@@ -139,6 +168,7 @@ class Photo(db.Model):
     tags = db.relationship('Tag', secondary=photos_tags, back_populates='photos')#图片标签
     author_id = db.Column(db.String(32), db.ForeignKey('user.id'))  #上传人ID(外键)
     author = db.relationship('User', back_populates='photos')       #上传人(反向关联)
+    collectors = db.relationship('Collect', back_populates='collected', cascade='all')#收藏人
 #图片数据删除后,执行图片文件删除
 @db.event.listens_for(Photo, 'after_delete', named=True)
 def delete_photo(**kwargs):
@@ -164,3 +194,12 @@ class Tag(db.Model):
     id = db.Column(db.String(32), primary_key=True)
     name = db.Column(db.String(30), index = True)                                   #标签名称
     photos = db.relationship('Photo', secondary=photos_tags, back_populates='tags') #关联图片
+'''
+    图片收藏(收藏者和被收藏图片多对多关系映射)
+'''
+class Collect(db.Model):
+    collector_id = db.Column(db.String(32), db.ForeignKey('user.id'), primary_key=True)     #收藏人ID
+    collector = db.relationship('User', back_populates='collections', lazy='joined')        #收藏人
+    collected_id = db.Column(db.String(32), db.ForeignKey('photo.id'),primary_key=True)     #被收藏图片ID
+    collected = db.relationship('Photo', back_populates='collectors', lazy='joined')        #被收藏图片
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)                             #收藏时间

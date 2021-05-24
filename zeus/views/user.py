@@ -1,7 +1,9 @@
 from flask import Blueprint, request, render_template, current_app,redirect,url_for
+from flask_login import login_required, current_user
 from zeus.models import User, Photo
 from zeus.extensions import db
-from zeus.forms.main import PhotoForm
+from zeus.tools import redirect_back
+from zeus.decorators import active_required, permission_required
 bp_user = Blueprint('user', __name__)
 #个人中心
 @bp_user.route('/index/<user_code>')
@@ -37,3 +39,15 @@ def delete(photo_id):
     if len(ids) == 0:
         return redirect(url_for('.index', user_code=photo.author.code))
     return redirect(url_for('main.show_photo', from_path='personal', photo_id=photo_id))
+'''
+    收藏图片
+'''
+
+@bp_user.route('/photo/collect/<photo_id>')
+@login_required                   #是否登录
+@active_required                  #账号是否激活
+@permission_required('COLLECT')   #是否具备收藏权限
+def collect(photo_id):
+    photo = Photo.query.get_or_404(photo_id)
+    current_user.collect(photo)
+    return redirect_back()
