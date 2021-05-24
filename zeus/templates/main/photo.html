@@ -36,22 +36,20 @@
             <!-- 显示标签 -->
             {% if tags %}
                 <div class="row text-right" style="margin:20px 0 20px 0;padding:0px;">
-                    <div class="col-md-1"><span class="text-success"><i class="fas fa-tags"></i>&nbsp;:&nbsp;</span></div>
+                    <span class="text-success"><i class="fas fa-tags"></i>&nbsp;:&nbsp;</span>
                     {% for tag in tags %}
-                        <div class="col-md-3">
-                            <span class="text-success">
-                                {% if from_path == 'personal' %}
-                                    <form method="post" action="{{ url_for('main.del_tag', photo_id=photo.id, tag_id=tag.id) }}">
-                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                        <input type="hidden" name="photo_id" value="{{ photo.id }}"/>
-                                        <input type="hidden" name="tag_id" value="{{ tag.id }}"/>
-                                        {{tag.name}}<button type="submit" class="btn btn-link text-secondary btn-sm"><i class="fas fa-times-circle"></i></button>
-                                    </form>
-                                {% else %}
-                                    {{tag.name}}
-                                {% endif %}
-                                </span>
-                        </div>
+                        <span class="text-success">
+                            {% if from_path == 'personal' %}
+                                <form method="post" action="{{ url_for('main.del_tag', photo_id=photo.id, tag_id=tag.id) }}" class="float-right">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                    <input type="hidden" name="photo_id" value="{{ photo.id }}"/>
+                                    <input type="hidden" name="tag_id" value="{{ tag.id }}"/>
+                                    {{tag.name}}<button type="submit" class="btn btn-link text-secondary btn-sm"><i class="fas fa-times-circle"></i></button>
+                                </form>
+                            {% else %}
+                                {{tag.name}}
+                            {% endif %}
+                        </span>
                     {% endfor %}
                 </div>
             {% endif %}
