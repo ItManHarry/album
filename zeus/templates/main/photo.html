@@ -29,7 +29,7 @@
                     <span class="text-success"><i class="fas fa-tags"></i>&nbsp;:&nbsp;</span>
                     {% for tag in tags %}
                         <span class="text-success">
-                            {% if from_path == 'personal' %}
+                            {% if from_path == 'personal' and nav_id == 'photos' %}
                                 <form method="post" action="{{ url_for('main.del_tag', photo_id=photo.id, tag_id=tag.id) }}" class="float-right">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                     <input type="hidden" name="photo_id" value="{{ photo.id }}"/>
@@ -37,7 +37,7 @@
                                     {{tag.name}}<button type="submit" class="btn btn-link text-secondary btn-sm"><i class="fas fa-times-circle"></i></button>
                                 </form>
                             {% else %}
-                                {{tag.name}}
+                                {{tag.name}}&nbsp;&nbsp;
                             {% endif %}
                         </span>
                     {% endfor %}
