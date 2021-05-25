@@ -1,11 +1,13 @@
 from flask import Blueprint, request, render_template, current_app,redirect,url_for
 from flask_login import login_required, current_user
-from zeus.models import User, Photo
+from zeus.models import User, Photo, Collect
 from zeus.extensions import db
 from zeus.tools import redirect_back
 from zeus.decorators import active_required, permission_required
 bp_user = Blueprint('user', __name__)
-#个人中心
+'''
+    个人中心
+'''
 @bp_user.route('/index/<user_code>')
 def index(user_code):
     user = User.query.filter_by(code=user_code).first_or_404()
@@ -13,7 +15,10 @@ def index(user_code):
     per_page = current_app.config['PHOTO_COUNT_PER_PAGE']
     pagination = Photo.query.with_parent(user).order_by(Photo.timestamp.desc()).paginate(page, per_page)
     photos = pagination.items
-    return render_template('user/index.html', user=user, photos=photos, pagination=pagination, from_path='personal')
+    return render_template('user/index.html', user=user, photos=photos, pagination=pagination, from_path='personal', nav_id='photos')
+'''
+    图片删除
+'''
 @bp_user.route('/photo/delete/<photo_id>', methods=['POST'])
 def delete(photo_id):
     from zeus.views.main import get_all_photo_ids
@@ -42,7 +47,6 @@ def delete(photo_id):
 '''
     收藏图片
 '''
-
 @bp_user.route('/photo/collect/<photo_id>')
 @login_required                   #是否登录
 @active_required                  #账号是否激活
@@ -51,3 +55,18 @@ def collect(photo_id):
     photo = Photo.query.get_or_404(photo_id)
     current_user.collect(photo)
     return redirect_back()
+'''
+    已收藏图片
+'''
+@bp_user.route('/photo/collect/list/<user_code>')
+def collected_list(user_code):
+    user = User.query.filter_by(code=user_code).first_or_404()
+    collects = Collect.query.with_parent(user).all()
+    photo_ids = []
+    for collect in collects:
+        photo_ids.append(collect.collected_id)
+    page = request.args.get('page', 1, type=int)
+    per_page = current_app.config['PHOTO_COUNT_PER_PAGE']
+    pagination = Photo.query.filter(Photo.id.in_(photo_ids)).order_by(Photo.timestamp.desc()).paginate(page, per_page)
+    photos = pagination.items
+    return render_template('user/index.html', user=user, photos=photos, pagination=pagination, from_path='personal', nav_id='collects')

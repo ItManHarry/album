@@ -14,9 +14,9 @@
     {% endif %}
 {% endmacro %}
 <!-- 图片显示:photo:图片信息;from_path:点击路径(主页点击还是个人中心点击) -->
-{% macro photo_card(photo, from_path) %}
+{% macro photo_card(photo, from_path, nav_id) %}
     <div class="card">
-      <a href="{{ url_for('main.show_photo', from_path=from_path, photo_id=photo.id) }}"><img src="{{ url_for('main.get_photo', filename=photo.file_name_s) }}" class="card-img-top portrait"></a>
+      <a href="{{ url_for('main.show_photo', from_path=from_path, photo_id=photo.id,nav_id=nav_id) }}"><img src="{{ url_for('main.get_photo', filename=photo.file_name_s) }}" class="card-img-top portrait"></a>
       <div class="card-body">
         {% if from_path == 'home' %}
         <a href = "{{ url_for('main.star_photo', photo_id=photo.id, next=request.full_path) }}" class="btn btn-link btn-sm text-info"><i class="fas fa-star"></i>&nbsp;{%if photo.star == None %}0{%else%}{{photo.star}}{%endif%}&nbsp;&nbsp;</a>

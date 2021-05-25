@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% from 'macros/macros.html' import photo_card with context %}
 {% from 'bootstrap/pagination.html' import render_pagination with context %}
-{% block title %}{{ user.name }}-主页{% endblock %}
+{% block title %}{{ user.name }}-个人中心{% endblock %}
 {% block main %}
 <div class = "container-fluid">
     {% include 'user/_header.html' %}<br>
@@ -10,7 +10,7 @@
         <div class="row">
             {% for photo in photos %}
                 <div class="col-md-3">
-                    {{ photo_card(photo,'personal') }}
+                    {{ photo_card(photo,'personal',nav_id) }}
                 </div>
             {% endfor %}
         </div>
