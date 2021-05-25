@@ -47,7 +47,7 @@
             <form id = 'delform' action="{{ url_for('user.delete', photo_id=photo.id) }}" method="post">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             </form>
-            {% if from_path == 'personal' %}
+            {% if from_path == 'personal' and nav_id == 'photos' %}
             <!-- 描述表单 -->
             <form method="post" id = "descform">
                 {{desc_form.csrf_token }}

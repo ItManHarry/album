@@ -172,7 +172,7 @@ def get_all_photo_ids(user=None,nav=None):
             photo_ids = []
             for collect in collects:
                 photo_ids.append(collect.collected_id)
-            print('Photo ids : ', photo_ids)
+            #print('Photo ids : ', photo_ids)
             photos = Photo.query.filter(Photo.id.in_(photo_ids)).order_by(Photo.timestamp.desc()).all()
     ids = []
     for photo in photos:
