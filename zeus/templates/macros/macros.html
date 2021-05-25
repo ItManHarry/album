@@ -19,16 +19,19 @@
       <a href="{{ url_for('main.show_photo', from_path=from_path, photo_id=photo.id,nav_id=nav_id) }}"><img src="{{ url_for('main.get_photo', filename=photo.file_name_s) }}" class="card-img-top portrait"></a>
       <div class="card-body">
         {% if from_path == 'home' %}
-        <a href = "{{ url_for('main.star_photo', photo_id=photo.id, next=request.full_path) }}" class="btn btn-link btn-sm text-info"><i class="fas fa-star"></i>&nbsp;{%if photo.star == None %}0{%else%}{{photo.star}}{%endif%}&nbsp;&nbsp;</a>
+          <a href = "{{ url_for('main.star_photo', photo_id=photo.id, next=request.full_path) }}" class="btn btn-link btn-sm text-info"><small>点赞&nbsp;<i class="fas fa-star"></i>&nbsp;{%if photo.star == None %}0{%else%}{{photo.star}}{%endif%}&nbsp;&nbsp;</small></a>
         {% else %}
-        <a href = "#" class="btn btn-link btn-sm text-info disabled"><i class="fas fa-star"></i>&nbsp;{%if photo.star == None %}0{%else%}{{photo.star}}{%endif%}&nbsp;&nbsp;</a>
+          <a href = "#" class="btn btn-link btn-sm text-info disabled"><small>点赞&nbsp;<i class="fas fa-star"></i>&nbsp;{%if photo.star == None %}0{%else%}{{photo.star}}{%endif%}&nbsp;&nbsp;</small></a>
         {% endif %}
-        <a href = "#" class="btn btn-link btn-sm text-info disabled"><i class="fas fa-comment"></i>&nbsp;{{photo.comments|length}}&nbsp;&nbsp;</a>
+          <a href = "#" class="btn btn-link btn-sm text-info disabled"><small>评论&nbsp;<i class="fas fa-comment"></i>&nbsp;{{photo.comments|length}}&nbsp;&nbsp;</small></a>
         {% if from_path == 'home' %}
-        <a href = "{{ url_for('user.collect', photo_id=photo.id, next=request.full_path) }}" class="btn btn-link btn-sm text-info"><i class="fas fa-warehouse"></i>&nbsp;{% if photo.collectors == None %}0{% else %}{{photo.collectors|length}}{% endif %}&nbsp;&nbsp;</a>
+          <a href = "{{ url_for('user.collect', photo_id=photo.id, next=request.full_path) }}" class="btn btn-link btn-sm text-info"><small>收藏&nbsp;<i class="fas fa-warehouse"></i>&nbsp;{% if photo.collectors == None %}0{% else %}{{photo.collectors|length}}{% endif %}&nbsp;&nbsp;</small></a>
+        {% endif %}
+        {% if nav_id == 'collects' %}
+          <a href = "{{ url_for('user.uncollect', photo_id=photo.id, next=request.full_path) }}" class="btn btn-link btn-sm text-secondary"><small>取消收藏&nbsp;<i class="fas fa-house-damage"></i>&nbsp;</small></a>
         {% endif %}
         {% if from_path == 'home' %}
-        <a href = "{{ url_for('main.report_photo', photo_id=photo.id, next=request.full_path) }}" class="btn btn-link btn-sm text-danger"><i class="fas fa-hand-pointer"></i>&nbsp;{% if photo.flag == None %}0{% else %}{{photo.flag}}{% endif %}&nbsp;&nbsp;</a>
+          <a href = "{{ url_for('main.report_photo', photo_id=photo.id, next=request.full_path) }}" class="btn btn-link btn-sm text-danger"><small>举报&nbsp;<i class="fas fa-hand-pointer"></i>&nbsp;{% if photo.flag == None %}0{% else %}{{photo.flag}}{% endif %}&nbsp;&nbsp;</small></a>
         {% endif %}
       </div>
     </div>

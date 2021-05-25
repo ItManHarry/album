@@ -56,6 +56,15 @@ def collect(photo_id):
     current_user.collect(photo)
     return redirect_back()
 '''
+    取消收藏
+'''
+@bp_user.route('/photo/uncollect/<photo_id>')
+@login_required                   #是否登录
+def uncollect(photo_id):
+    photo = Photo.query.get_or_404(photo_id)
+    current_user.uncollect(photo)
+    return redirect_back()
+'''
     已收藏图片
 '''
 @bp_user.route('/photo/collect/list/<user_code>')
