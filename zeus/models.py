@@ -70,6 +70,15 @@ class Permission(db.Model):
     name = db.Column(db.String(30), unique=True)        #权限名称(唯一)
     roles = db.relationship('Role', secondary='roles_permissions',back_populates='permissions')
 '''
+    关注用户(关注者和被关注者多对多映射)
+'''
+class Follow(db.Model):
+    follower_id = db.Column(db.String(32), db.ForeignKey('user.id'), primary_key=True)      #关注者ID
+    follower = db.relationship('User', foreign_keys = [follower_id], back_populates='following', lazy='joined')
+    followed_id = db.Column(db.String(32), db.ForeignKey('user.id'), primary_key=True)      #被关注者ID
+    followed = db.relationship('User', foreign_keys=[followed_id], back_populates='followers', lazy='joined')
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)                             #关注时间
+'''
     系统用户
 '''
 class User(db.Model, UserMixin):
@@ -92,6 +101,8 @@ class User(db.Model, UserMixin):
     photos = db.relationship('Photo', back_populates='author',cascade='all')#上传图片(反向关联)
     logins = db.relationship('Login', back_populates='user', cascade='all') #登录履历(反向关联)
     collections = db.relationship('Collect', back_populates='collector', cascade='all')#收藏图片
+    following = db.relationship('Follow', foreign_keys=[Follow.follower_id], back_populates='follower', lazy='dynamic', cascade='all')
+    followers = db.relationship('Follow', foreign_keys=[Follow.followed_id], back_populates='followed', lazy='dynamic', cascade='all')
     #设置密码-使用werkzeug.security提供的加密方式
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -143,6 +154,24 @@ class User(db.Model, UserMixin):
             return True
         else:
             return False
+    #是否已关注某个用户
+    def is_following(self, user):
+        return self.following.filter_by(followed_id=user.id).first() is not None
+    #是否被某个用户关注
+    def is_followed_by(self, user):
+        return self.followers.filter_by(follower_id=user.id).first() is not None
+    #关注
+    def follow(self, user):
+        if not self.is_following(user):
+            follow = Follow(follower=self,followed=user)
+            db.session.add(follow)
+            db.session.commit()
+    #取消关注
+    def unfollow(self, user):
+        follow = self.following.filter_by(followed_id=user.id).first()
+        if follow:
+            db.session.delete(follow)
+            db.session.commit()
 '''
     登录履历
 '''
