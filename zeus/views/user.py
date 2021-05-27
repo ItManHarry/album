@@ -87,3 +87,10 @@ def follow(user_id):
     user = User.query.get_or_404(user_id)
     current_user.follow(user)
     return redirect_back()
+@bp_user.route('/user/unfollow/<user_id>')
+@login_required                   #是否登录
+@active_required                  #账号是否激活
+def unfollow(user_id):
+    user = User.query.get_or_404(user_id)
+    current_user.unfollow(user)
+    return redirect_back()
