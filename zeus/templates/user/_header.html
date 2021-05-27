@@ -17,9 +17,9 @@
       <i class="far fa-calendar-alt"></i>&nbsp;
       <span class="text-secondary">加入时间&nbsp;&nbsp;{{ moment(user.member_since).format('LL') }}</span>&nbsp;&nbsp;
       {% if current_user.is_authenticated and user != current_user and not current_user.is_following(user) %}
-      <a href="{{ url_for('user.follow', user_id=user.id)}}" class="btn btn-link text-secondary"><i class="fas fa-user-friends"></i>&nbsp;关注</a>
+      <a href="{{ url_for('user.follow', user_id=user.id, next=request.full_path)}}" class="btn btn-link text-secondary"><i class="fas fa-user-friends"></i>&nbsp;关注</a>
       {% else %}
-      <a href="{{ url_for('user.unfollow', user_id=user.id)}}" class="btn btn-link text-secondary"><i class="fas fa-user-alt-slash"></i>&nbsp;取消关注</a>
+      <a href="{{ url_for('user.unfollow', user_id=user.id, next=request.full_path)}}" class="btn btn-link text-secondary"><i class="fas fa-user-alt-slash"></i>&nbsp;取消关注</a>
       {% endif %}
     </p>
   </div>
