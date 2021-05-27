@@ -79,3 +79,11 @@ def collected_list(user_code):
     pagination = Photo.query.filter(Photo.id.in_(photo_ids)).order_by(Photo.timestamp.desc()).paginate(page, per_page)
     photos = pagination.items
     return render_template('user/index.html', user=user, photos=photos, pagination=pagination, from_path='personal', nav_id='collects')
+@bp_user.route('/user/follow/<user_id>')
+@login_required                   #是否登录
+@active_required                  #账号是否激活
+@permission_required('FOLLOW')   #是否具备关注权限
+def follow(user_id):
+    user = User.query.get_or_404(user_id)
+    current_user.follow(user)
+    return redirect_back()
