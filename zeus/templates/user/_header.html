@@ -34,7 +34,7 @@
       <a class="nav-link" href="{{ url_for('main.upload') }}"><i class="fas fa-upload"></i>&nbsp;上传</a>
       <a class="nav-link" href="{{ url_for('user.index', user_code=current_user.code) }}"><i class="fas fa-list"></i>&nbsp;相册&nbsp;<span class="badge badge-info">{{ current_user.photos|length }}</span></a>
       <a class="nav-link" href="{{ url_for('user.collected_list', user_code=current_user.code) }}"><i class="fas fa-warehouse"></i>&nbsp;已收藏&nbsp;<span class="badge badge-info">{{ current_user.collections|length }}</span></a>
-      <a class="nav-link" href="{{ url_for('user.follow_list', user_id=current_user.id) }}"><i class="fas fa-user-friends"></i>&nbsp;已关注&nbsp;<span class="badge badge-info">{{ current_user.logins|length }}</span></a>
+      <a class="nav-link" href="{{ url_for('user.follow_list', user_id=current_user.id) }}"><i class="fas fa-user-friends"></i>&nbsp;已关注&nbsp;<span class="badge badge-info">{% if followings %}{{ followings|length }}{% else %}0{% endif %}</span></a>
       <!-- 个人中心相册清单进入图片详情时才显示标签和删除 -->
       {% if photo and nav_id == 'photos'%}
       <!-- 标签维护 -->

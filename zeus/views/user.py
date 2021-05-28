@@ -11,11 +11,14 @@ bp_user = Blueprint('user', __name__)
 @bp_user.route('/index/<user_code>')
 def index(user_code):
     user = User.query.filter_by(code=user_code).first_or_404()
+    followings = []
+    for follow in user.following:
+        followings.append(follow.followed)
     page = request.args.get('page', 1, type=int)
     per_page = current_app.config['PHOTO_COUNT_PER_PAGE']
     pagination = Photo.query.with_parent(user).order_by(Photo.timestamp.desc()).paginate(page, per_page)
     photos = pagination.items
-    return render_template('user/index.html', user=user, photos=photos, pagination=pagination, from_path='personal', nav_id='photos')
+    return render_template('user/index.html', user=user, photos=photos, pagination=pagination, from_path='personal', nav_id='photos', followings=followings)
 '''
     图片删除
 '''
@@ -70,6 +73,9 @@ def uncollect(photo_id):
 @bp_user.route('/photo/collect/list/<user_code>')
 def collected_list(user_code):
     user = User.query.filter_by(code=user_code).first_or_404()
+    followings = []
+    for follow in user.following:
+        followings.append(follow.followed)
     collects = Collect.query.with_parent(user).all()
     photo_ids = []
     for collect in collects:
@@ -78,7 +84,7 @@ def collected_list(user_code):
     per_page = current_app.config['PHOTO_COUNT_PER_PAGE']
     pagination = Photo.query.filter(Photo.id.in_(photo_ids)).order_by(Photo.timestamp.desc()).paginate(page, per_page)
     photos = pagination.items
-    return render_template('user/index.html', user=user, photos=photos, pagination=pagination, from_path='personal', nav_id='collects')
+    return render_template('user/index.html', user=user, photos=photos, pagination=pagination, from_path='personal', nav_id='collects', followings=followings)
 '''
     关注用户
 '''
@@ -98,12 +104,11 @@ def follow(user_id):
 @active_required                  #账号是否激活
 def follow_list(user_id):
     user = User.query.get_or_404(user_id)
-    following_list = user.following
     followings = []
-    for follow in following_list:
+    for follow in user.following:
         followings.append(follow.followed)
     print('Following Users are : ', followings)
-    return render_template('user/index.html', user=user, photos=None, pagination=None, from_path='personal', nav_id='follow',followings=followings)
+    return render_template('user/index.html', user=user, photos=None, pagination=None, from_path='personal', nav_id='follow', followings=followings)
 '''
     取消关注用户
 '''
