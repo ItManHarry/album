@@ -39,7 +39,7 @@ def delete(photo_id):
     # 执行删除
     db.session.delete(photo)
     db.session.commit()
-    # 重新获取图片数量,如果已全部删除,则跳转值个人中心
+    # 重新获取图片数量,如果已全部删除,则跳转值至个人中心
     ids = get_all_photo_ids(author)
     if len(ids) == 0:
         return redirect(url_for('.index', user_code=photo.author.code))
@@ -90,6 +90,20 @@ def follow(user_id):
     user = User.query.get_or_404(user_id)
     current_user.follow(user)
     return redirect_back()
+'''
+    显示已关注用户清单
+'''
+@bp_user.route('/user/follow/<user_id>/list')
+@login_required                   #是否登录
+@active_required                  #账号是否激活
+def follow_list(user_id):
+    user = User.query.get_or_404(user_id)
+    following_list = user.following
+    followings = []
+    for follow in following_list:
+        followings.append(follow.followed)
+    print('Following Users are : ', followings)
+    return render_template('user/index.html', user=user, photos=None, pagination=None, from_path='personal', nav_id='follow',followings=followings)
 '''
     取消关注用户
 '''

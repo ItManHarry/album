@@ -16,10 +16,12 @@
       {% endif %}
       <i class="far fa-calendar-alt"></i>&nbsp;
       <span class="text-secondary">加入时间&nbsp;&nbsp;{{ moment(user.member_since).format('LL') }}</span>&nbsp;&nbsp;
-      {% if current_user.is_authenticated and user != current_user and not current_user.is_following(user) %}
-      <a href="{{ url_for('user.follow', user_id=user.id, next=request.full_path)}}" class="btn btn-link text-secondary"><i class="fas fa-user-friends"></i>&nbsp;关注</a>
-      {% else %}
-      <a href="{{ url_for('user.unfollow', user_id=user.id, next=request.full_path)}}" class="btn btn-link text-secondary"><i class="fas fa-user-alt-slash"></i>&nbsp;取消关注</a>
+      {% if current_user.is_authenticated and from_path == 'home' %}
+        {% if user != current_user and not current_user.is_following(user) %}
+        <a href="{{ url_for('user.follow', user_id=user.id, next=request.full_path)}}" class="btn btn-link text-secondary"><i class="fas fa-user-friends"></i>&nbsp;关注</a>
+        {% else %}
+        <a href="{{ url_for('user.unfollow', user_id=user.id, next=request.full_path)}}" class="btn btn-link text-secondary"><i class="fas fa-user-alt-slash"></i>&nbsp;取消关注</a>
+        {% endif %}
       {% endif %}
     </p>
   </div>
@@ -32,6 +34,7 @@
       <a class="nav-link" href="{{ url_for('main.upload') }}"><i class="fas fa-upload"></i>&nbsp;上传</a>
       <a class="nav-link" href="{{ url_for('user.index', user_code=current_user.code) }}"><i class="fas fa-list"></i>&nbsp;相册&nbsp;<span class="badge badge-info">{{ current_user.photos|length }}</span></a>
       <a class="nav-link" href="{{ url_for('user.collected_list', user_code=current_user.code) }}"><i class="fas fa-warehouse"></i>&nbsp;已收藏&nbsp;<span class="badge badge-info">{{ current_user.collections|length }}</span></a>
+      <a class="nav-link" href="{{ url_for('user.follow_list', user_id=current_user.id) }}"><i class="fas fa-user-friends"></i>&nbsp;已关注&nbsp;<span class="badge badge-info">{{ current_user.logins|length }}</span></a>
       <!-- 个人中心相册清单进入图片详情时才显示标签和删除 -->
       {% if photo and nav_id == 'photos'%}
       <!-- 标签维护 -->

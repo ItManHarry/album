@@ -5,22 +5,45 @@
 {% block main %}
 <div class = "container-fluid">
     {% include 'user/_header.html' %}<br>
-    {% if photos %}
-        {{ render_pagination(pagination,align='right') }}
-        <div class="row">
-            {% for photo in photos %}
-                <div class="col-md-3">
-                    {{ photo_card(photo,'personal',nav_id) }}
-                </div>
-            {% endfor %}
-        </div>
-        {{ render_pagination(pagination,align='right') }}
-    {% else %}
-        <div class="row">
-            <div class="col-md-12 text-center">
-                  仍未上传任何图片!!!<a class="btn btn-link btn-sm" href="{{ url_for('main.upload') }}">去上传 &gt;&gt;&gt; </a>
+    {% if nav_id != 'follow' %}
+        {% if photos %}
+            {{ render_pagination(pagination,align='right') }}
+            <div class="row">
+                {% for photo in photos %}
+                    <div class="col-md-3">
+                        {{ photo_card(photo,'personal',nav_id) }}
+                    </div>
+                {% endfor %}
             </div>
-        </div>
+            {{ render_pagination(pagination,align='right') }}
+        {% else %}
+            <div class="row">
+                <div class="col-md-12 text-center">
+                      {% if nav_id == 'photos'%}
+                        仍未上传任何图片!!!<a class="btn btn-link btn-sm" href="{{ url_for('main.upload') }}">去上传 &gt;&gt;&gt; </a>
+                      {% else %}
+                        仍未收藏任何图片!!!
+                      {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    {% else %}
+        {% if followings %}
+            <div class="row">
+                {% for follow in followings %}
+                    <div class="col-md-3 text-center">
+                        <img src="{{ url_for('main.get_avatar', filename=follow.avatar_l) }}" class="img-fluid rounded fluid-right"><br>
+                        <span>{{ follow.name }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="row">
+                <div class="col-md-12 text-center">
+                      仍未关注任何人!!!
+                </div>
+            </div>
+        {% endif %}
     {% endif %}
 </div>
 {%endblock%}
