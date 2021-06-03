@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, current_app,redirect,url_for
+from flask import Blueprint, request, render_template, current_app,redirect,url_for,jsonify
 from flask_login import login_required, current_user
 from zeus.models import User, Photo, Collect
 from zeus.extensions import db
@@ -119,3 +119,7 @@ def unfollow(user_id):
     user = User.query.get_or_404(user_id)
     current_user.unfollow(user)
     return redirect_back()
+@bp_user.route('/user/info/<user_id>')
+def info(user_id):
+    user = User.query.get_or_404(user_id)
+    return jsonify(name=user.name, code=user.code)

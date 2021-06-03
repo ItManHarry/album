@@ -16,6 +16,7 @@
       {% endif %}
       <i class="far fa-calendar-alt"></i>&nbsp;
       <span class="text-secondary">加入时间&nbsp;&nbsp;{{ moment(user.member_since).format('LL') }}</span>&nbsp;&nbsp;
+      <button class="btn btn-link btn-sm" onclick="getUserInfo('{{user.id}}')">信息</button>
       {% if current_user.is_authenticated and from_path == 'home' %}
         {% if user != current_user %}
             {% if not current_user.is_following(user) %}

@@ -33,7 +33,7 @@
                 {% for follow in followings %}
                     <div class="col-md-3 text-center">
                         <img src="{{ url_for('main.get_avatar', filename=follow.avatar_l) }}" class="img-fluid rounded fluid-right"><br>
-                        <span>{{ follow.name }}</span>
+                        <small>{{ follow.name }}</small>
                     </div>
                 {% endfor %}
             </div>
@@ -47,3 +47,20 @@
     {% endif %}
 </div>
 {%endblock%}
+<script>
+    {% block function%}
+    function getUserInfo(user_id){
+        $.ajax({
+            type:'get',
+            url:'/user/user/info/'+user_id,
+            data:{},
+            success:function(data){
+                alert('Success'+data.name)
+            },
+            error:function(){
+                alert('Error')
+            }
+        })
+    }
+    {% endblock %}
+</script>
