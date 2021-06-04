@@ -147,6 +147,4 @@ def notice_show(notice_id):
     if not notice.is_read:
         notice.is_read = True
         db.session.commit()
-    else:
-        print('Notice has been read!!!')
     return render_template('user/notice_show.html', notice=notice)
