@@ -1,9 +1,10 @@
 from flask import Blueprint, request, render_template, current_app,redirect,url_for,jsonify
 from flask_login import login_required, current_user
-from zeus.models import User, Photo, Collect
+from zeus.models import User, Photo, Collect, Notification
 from zeus.extensions import db
 from zeus.tools import redirect_back
 from zeus.decorators import active_required, permission_required
+from zeus.notification import push_follow_notification, push_unfollow_notification
 bp_user = Blueprint('user', __name__)
 '''
     个人中心
@@ -95,6 +96,8 @@ def collected_list(user_code):
 def follow(user_id):
     user = User.query.get_or_404(user_id)
     current_user.follow(user)
+    #添加通知提醒
+    push_follow_notification(current_user, user)
     return redirect_back()
 '''
     显示已关注用户清单
@@ -118,8 +121,29 @@ def follow_list(user_id):
 def unfollow(user_id):
     user = User.query.get_or_404(user_id)
     current_user.unfollow(user)
+    # 添加通知提醒
+    push_unfollow_notification(current_user, user)
     return redirect_back()
 @bp_user.route('/user/info/<user_id>')
 def info(user_id):
     user = User.query.get_or_404(user_id)
     return jsonify(name=user.name, code=user.code)
+'''
+    消息清单
+'''
+@bp_user.route('/notice/list/<user_id>')
+@login_required                   #是否登录
+def notice_list(user_id):
+    user = User.query.get_or_404(user_id)
+    notices = Notification.query.with_parent(user).order_by(Notification.timestamp.desc()).all()
+    return render_template('user/notices.html', notices=notices, user=user)
+'''
+    查看消息
+'''
+@bp_user.route('/notice/show/<notice_id>')
+@login_required
+def notice_show(notice_id):
+    notice = Notification.query.get_or_404(notice_id)
+    notice.is_read = True
+    db.session.commit()
+    return render_template('user/notice_show.html', notice=notice)

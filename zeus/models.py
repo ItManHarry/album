@@ -103,6 +103,7 @@ class User(db.Model, UserMixin):
     collections = db.relationship('Collect', back_populates='collector', cascade='all')#收藏图片
     following = db.relationship('Follow', foreign_keys=[Follow.follower_id], back_populates='follower', lazy='dynamic', cascade='all')
     followers = db.relationship('Follow', foreign_keys=[Follow.followed_id], back_populates='followed', lazy='dynamic', cascade='all')
+    notifications = db.relationship('Notification', back_populates='receiver', cascade='all')
     #设置密码-使用werkzeug.security提供的加密方式
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -232,3 +233,13 @@ class Collect(db.Model):
     collected_id = db.Column(db.String(32), db.ForeignKey('photo.id'),primary_key=True)     #被收藏图片ID
     collected = db.relationship('Photo', back_populates='collectors', lazy='joined')        #被收藏图片
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)                             #收藏时间
+'''
+    系统消息
+'''
+class Notification(db.Model):
+    id = db.Column(db.String(32), primary_key=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)  #消息时间
+    message = db.Column(db.Text)
+    is_read = db.Column(db.Boolean, default = False)
+    receiver_id = db.Column(db.String(32), db.ForeignKey('user.id'))
+    receiver = db.relationship('User', back_populates='notifications')

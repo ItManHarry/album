@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}{{ current_user.name }}-消息中心{% endblock %}
+{% block main %}
+<div class = "container-fluid">
+    <div class="row">
+        <div class="col-10">
+            <p>{{ notice.message }}</p>
+        </div>
+        <div class="col-2 text-right">
+            <a href="{{ url_for('user.notice_list', user_id=current_user.id)}}" class="btn btn-outline-secondary"><i class="fas fa-long-arrow-alt-left"></i>&nbsp;Back</a>
+        </div>
+    </div>
+</div>
+{%endblock%}
