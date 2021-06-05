@@ -20,7 +20,7 @@
                         <td>{{ '已读' if notice.is_read else '未读'}}</td>
                         <td>
                             <a href="{{ url_for('user.notice_show', notice_id=notice.id) }}" class="btn btn-outline-info btn-sm" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="top" data-content="Read"><i class="fab fa-readme"></i></a>
-                            <a class="btn btn-outline-danger btn-sm"  data-container="body" data-trigger="hover" data-toggle="popover" data-placement="top" data-content="Delete"><i class="far fa-trash-alt"></i></a>
+                            <a href="{{ url_for('user.notice_delete', notice_id=notice.id) }}" class="btn btn-outline-danger btn-sm"  data-container="body" data-trigger="hover" data-toggle="popover" data-placement="top" data-content="Delete"><i class="far fa-trash-alt"></i></a>
                         </td>
                     </tr>
                 {% endfor %}

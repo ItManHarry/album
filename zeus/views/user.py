@@ -148,3 +148,13 @@ def notice_show(notice_id):
         notice.is_read = True
         db.session.commit()
     return render_template('user/notice_show.html', notice=notice)
+'''
+    删除消息
+'''
+@bp_user.route('/notice/delete/<notice_id>')
+@login_required
+def notice_delete(notice_id):
+    notice = Notification.query.get_or_404(notice_id)
+    db.session.delete(notice)
+    db.session.commit()
+    return redirect(url_for('.notice_list', user_id=current_user.id))
