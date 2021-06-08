@@ -1,0 +1,68 @@
+{% extends 'user/setting/base.html' %}
+{% block title %}{{ user.name }}-个人信息设置{% endblock %}
+{% block content %}
+  <div class="row">
+    <div class="col">
+      <form method="post">
+          {{form.csrf_token }}
+          <div class="form-row">
+            <div class="form-group col-md-6">
+                <span class="text-danger">*</span>&nbsp;{{form.code.label}}
+                {{form.code(class='form-control')}}
+                {% for message in form.code.errors %}
+                      <small class="text-danger">
+                          {{ message }}
+                      </small>
+                {% endfor %}
+            </div>
+            <div class="form-group col-md-6">
+                  <span class="text-danger">*</span>&nbsp;{{form.name.label}}
+                  {{form.name(class='form-control')}}
+                  {% for message in form.name.errors %}
+                      <small class="text-danger">
+                          {{ message }}
+                      </small>
+                  {% endfor %}
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+                  <span class="text-danger">*</span>&nbsp;{{form.email.label}}
+                  {{form.email(class='form-control')}}
+                  {% for message in form.email.errors %}
+                      <small class="text-danger">
+                          {{ message }}
+                      </small>
+                  {% endfor %}
+            </div>
+            <div class="form-group  col-md-6">
+                  {{form.birthday.label}}
+                  {{form.birthday(class='form-control')}}
+                  {% for message in form.birthday.errors %}
+                      <small class="text-danger">
+                          {{ message }}
+                      </small>
+                  {% endfor %}
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-12">
+                  {{form.website.label}}
+                  {{form.website(class='form-control')}}
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-12">
+                  {{form.location.label}}
+                  {{form.location(class='form-control')}}
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              {{form.submit(class='btn btn-outline-info btn-block')}}
+            </div>
+          </div>
+        </form>
+    </div>
+  </div>
+{% endblock %}
