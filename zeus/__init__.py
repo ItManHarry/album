@@ -68,9 +68,11 @@ def register_web_views(app):
     from zeus.views.auth import bp_auth
     from zeus.views.main import bp_main
     from zeus.views.user import bp_user
+    from zeus.views.personal import bp_personal
     app.register_blueprint(bp_auth, url_prefix='/auth')
     app.register_blueprint(bp_main, url_prefix='/main')
     app.register_blueprint(bp_user, url_prefix='/user')
+    app.register_blueprint(bp_personal, url_prefix='/personal')
 #注册shell环境
 def register_web_shell(app):
     @app.shell_context_processor

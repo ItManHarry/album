@@ -169,10 +169,3 @@ def notice_delete(notice_id):
     db.session.delete(notice)
     db.session.commit()
     return redirect(url_for('.notice_list', user_id=current_user.id))
-'''
-    个人设置
-'''
-@bp_user.route('/setting')
-@login_required
-def user_setting():
-    return render_template('user/setting/base.html', user=current_user)
