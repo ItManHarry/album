@@ -50,7 +50,7 @@
                                 <!--<span class="navbar-text">
                                     <img src="{{ url_for('main.get_avatar', filename=current_user.avatar_s) }}" style="width:24px;height:24px;">&nbsp;&nbsp;{{ current_user.name|title }}
                                 </span>&nbsp;&nbsp;-->
-                                <a href="{{ url_for('user.notice_list', user_id=current_user.id)}}" class="btn btn-link"><i class="far fa-envelope"></i>&nbsp;消息&nbsp;<span class="badge badge-info">{{current_user.notifications|length}}</span></a>
+                                <a href="{{ url_for('user.notice_list', user_id=current_user.id)}}" class="btn btn-link"><i class="far fa-envelope"></i>&nbsp;消息&nbsp;<span class="badge badge-info" id = "mc">{{current_user.notifications|length}}</span></a>
                                 <a href="{{ url_for('user.index', user_code=current_user.code) }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-home"></i>&nbsp;&nbsp;个人中心</a>&nbsp;&nbsp;
                                 <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-success btn-sm"><i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;Logout</a>&nbsp;&nbsp;
                             {% else %}
@@ -70,10 +70,18 @@
     </footer>
     <script>
         {# --------- 引入子页面JavaScritp变量 --------- #}
-        {% block variable %}{% endblock %}
+        {% block variable %}
+            {%if current_user.is_authenticated %}
+                var is_authenticated = true
+                var user_id = '{{current_user.id}}'
+            {% else %}
+                var is_authenticated = false
+            {% endif %}
+        {% endblock %}
         {% block ready %}
         $(function(){
-            //alert('base is ready')
+            if(is_authenticated)
+                setInterval(get_message_count, 10000)
         })
         {% endblock %}
         {# --------- 引入子页面自己的JavaScript函数 --------- #}
@@ -91,6 +99,23 @@
         }
         function allClick(){
             alert('All Click!!!')
+        }
+        //定时读取消息数
+        function get_message_count(){
+            var user_id = '{{ current_user.id }}'
+            var url = '/user/notice/'+user_id+'/count'
+            //alert(url)
+            $.ajax({
+                type:'get',
+                url:url,
+                success:function(data){
+                    //alert(data.count)
+                    $('#mc').text(data.count)
+                },
+                error:function(){
+                    alert('Error!!!')
+                }
+            })
         }
         {% endblock %}
     </script>

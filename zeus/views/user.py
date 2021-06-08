@@ -124,10 +124,21 @@ def unfollow(user_id):
     # 添加通知提醒
     push_unfollow_notification(current_user, user)
     return redirect_back()
+'''
+    获取用户信息
+'''
 @bp_user.route('/user/info/<user_id>')
 def info(user_id):
     user = User.query.get_or_404(user_id)
     return jsonify(name=user.name, code=user.code)
+'''
+    获取消息数量
+'''
+@bp_user.route('/notice/<user_id>/count')
+def notice_count(user_id):
+    user = User.query.get_or_404(user_id)
+    notices = Notification.query.with_parent(user).all()
+    return jsonify(count=len(notices))
 '''
     消息清单
 '''

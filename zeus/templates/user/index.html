@@ -49,6 +49,7 @@
 {%endblock%}
 <script>
     {% block function%}
+    {{ super() }}
     function getUserInfo(user_id){
         $.ajax({
             type:'get',
