@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template,url_for,redirect,request
+from flask import Blueprint, render_template, url_for, redirect, request, flash
 from flask_login import login_required,current_user
-from zeus.forms.auth import RegisterForm
+from zeus.forms.personal import ProfileForm
 from zeus.extensions import db
 bp_personal = Blueprint('personal', __name__)
 '''
@@ -9,7 +9,7 @@ bp_personal = Blueprint('personal', __name__)
 @bp_personal.route('/setting/profile', methods=['GET','POST'])
 @login_required
 def profile():
-    form = RegisterForm()
+    form = ProfileForm()
     if request.method == 'GET':
         form.code.data = current_user.code
         form.name.data = current_user.name
@@ -18,12 +18,13 @@ def profile():
         form.location.data = current_user.location
         form.birthday.data = current_user.birth
     if form.validate_on_submit():
-        #current_user.code = form.code.data
+        current_user.code = form.code.data
         current_user.name = form.name.data
-        #current_user.email = form.email.data
+        current_user.email = form.email.data
         current_user.website = form.website.data
         current_user.location = form.location.data
         current_user.birth = form.birthday.data
         db.session.commit()
+        flash('信息保存成功!!!')
         return redirect(url_for('.profile'))
     return render_template('user/setting/profile.html', form=form, user=current_user)

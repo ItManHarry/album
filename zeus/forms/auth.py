@@ -1,7 +1,7 @@
-from flask_wtf import  FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField,DateField
-from wtforms.validators import DataRequired,Length,Email,Regexp,EqualTo
-from wtforms import ValidationError,validators
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, DateField
+from wtforms.validators import DataRequired, Length, Email, Regexp, EqualTo
+from wtforms import ValidationError, validators
 from zeus.models import User
 #用户注册Form
 class RegisterForm(FlaskForm):

@@ -1,6 +1,27 @@
 {% extends 'user/setting/base.html' %}
 {% block title %}{{ user.name }}-个人信息设置{% endblock %}
+{% block links %}
+    {{static_file('css','css/bootstrap-datepicker3.min.css')}}
+{% endblock %}
+{% block scripts %}
+    {{static_file('js','js/bootstrap-datepicker.min.js')}}
+    {{static_file('js','js/bootstrap-datepicker.zh-CN.min.js')}}
+{% endblock %}
 {% block content %}
+ <div class="row">
+    <div class = "col">
+        {% if get_flashed_messages() %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              {% for message in get_flashed_messages() %}
+                <small>{{ message }}</small>
+              {% endfor %}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+        {% endif %}
+    </div>
+  </div>
   <div class="row">
     <div class="col">
       <form method="post">
@@ -66,3 +87,16 @@
     </div>
   </div>
 {% endblock %}
+<script>
+    {% block ready %}
+        $(function(){
+            $('#birthday').datepicker({
+                weekStart: 1,
+                autoclose: true,
+                daysOfWeekHighlighted: "0,6",
+                format: "yyyy-mm-dd",
+                language: "zh-CN"
+            })
+        })
+    {% endblock %}
+</script>
