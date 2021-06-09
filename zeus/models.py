@@ -97,6 +97,7 @@ class User(db.Model, UserMixin):
     avatar_s = db.Column(db.String(64))                             #小头像
     avatar_m = db.Column(db.String(64))                             #中头像
     avatar_l = db.Column(db.String(64))                             #大头像
+    avatar_r = db.Column(db.String(64))                             #自定义头像
     role = db.relationship('Role', back_populates='users')          #对应角色(反向关联)
     photos = db.relationship('Photo', back_populates='author',cascade='all')#上传图片(反向关联)
     logins = db.relationship('Login', back_populates='user', cascade='all') #登录履历(反向关联)

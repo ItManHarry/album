@@ -1,0 +1,92 @@
+{% extends 'user/setting/base.html' %}
+{% block title %}{{ user.name }}-头像设置{% endblock %}
+{% block links %}
+    {{ static_file('css','css/jquery.Jcrop.min.css') }}
+    {# avatars.jcrop_css() #}
+{% endblock %}
+{% block styles %}
+<style>
+    #preview-box{
+        display:block;
+        position:absolute;
+        top:10px;
+        right:-280px;
+        padding:6px;
+        border: 1px rgba(0,0,0,.4) solid;
+        background-color:white;
+        -webkit-border-radius:6px;
+        -moz-border-radius:6px;
+        border-radius:6px;
+        -webkit-box-shadow:1px 1px 5px 2px rgba(0,0,0,.2);
+        -moz-box-shadow:1px 1px 5px 2px rgba(0,0,0,.2);
+        box-shadow:1px 1px 5px 2px rgba(0,0,0,.2);
+    }
+</style>
+{% endblock %}
+{% block scripts %}
+    {{static_file('js','js/jquery.Jcrop.min.js') }}
+    {# avatars.jcrop_js() #}
+    {# init jcrop #}
+    {{ avatars.init_jcrop() }}
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col">
+        <div class="card w-100">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" action="{{url_for('personal.upload')}}">
+                  {{ upload_form.csrf_token }}
+                  <div class="form-group">
+                      <small class="text-info">请上传格式为(.jpg,.png)同时大小小于3M的图片!!!</small><hr>
+                      {{ upload_form.image(class='form-control-file',accept='.jpg,.png') }}
+                      {% for message in upload_form.image.errors %}
+                        <small class="text-danger">
+                            {{ message }}
+                        </small>
+                      {% endfor %}
+                      <hr>
+                  </div>
+                  <div class="form-group">
+                      {{ upload_form.submit(class='btn btn-outline-primary') }}
+                  </div>
+                </form>
+                {% if get_flashed_messages() %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                      {% for message in get_flashed_messages() %}
+                        <small>{{ message }}</small>
+                      {% endfor %}
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                {% endif %}
+                <hr>
+                <!-- 自定义头像未上传的情况显示默认的大头像 -->
+                {% if current_user.avatar_r %}
+                    {{ avatars.crop_box('main.get_avatar', current_user.avatar_r)}}
+                    {{ avatars.preview_box('main.get_avatar', current_user.avatar_r)}}
+                {% else %}
+                    {{ avatars.crop_box('main.get_avatar', current_user.avatar_l)}}
+                    {{ avatars.preview_box('main.get_avatar', current_user.avatar_l)}}
+                {% endif %}
+                <hr>
+                <form method="post" action="{{ url_for('personal.crop') }}">
+                    {{ crop_form.csrf_token }}
+                    {{ crop_form.x }}
+                    {{ crop_form.y }}
+                    {{ crop_form.w }}
+                    {{ crop_form.h }}
+                    {{ crop_form.submit(class='btn btn-outline-success') }}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+<script>
+    {% block ready %}
+        $(function(){
+           //alert('Avatar')
+        })
+    {% endblock %}
+</script>

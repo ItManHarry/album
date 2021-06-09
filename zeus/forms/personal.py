@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, DateField
+from flask_wtf.file import FileField, FileAllowed, FileRequired
+from wtforms import StringField, SubmitField, DateField, HiddenField
 from wtforms.validators import DataRequired, Length, Email, Regexp
 from wtforms import ValidationError, validators
 from flask_login import current_user
@@ -24,3 +25,12 @@ class ProfileForm(FlaskForm):
     def validate_code(self, field):
         if field.data.lower() != current_user.code and User.query.filter_by(code=field.data.lower()).first():
             raise ValidationError('账号已注册!!!')
+class AvatarForm(FlaskForm):
+    image = FileField('上传(<=3M)', validators=[FileRequired(), FileAllowed(['jpg', 'png'], '只允许上传.jpg和.png格式图片!!!')])
+    submit = SubmitField('上传')
+class CropAvatarForm(FlaskForm):
+    x = HiddenField()
+    y = HiddenField()
+    w = HiddenField()
+    h = HiddenField()
+    submit = SubmitField('保存')

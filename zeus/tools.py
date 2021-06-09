@@ -9,7 +9,7 @@ from zeus.settings import operations
 from zeus.extensions import db
 import PIL
 from PIL import Image
-import os
+import os, uuid
 #获取当前时间
 def get_time():
     return 'Now is : %s' %time.strftime('%Y年%m月%d日')
@@ -68,3 +68,10 @@ def resize_image(image, file_name, base_width):
     file_name += current_app.config['ALBUM_IMG_SUFFIX'][base_width] + ext
     img.save(os.path.join(current_app.config['SYS_FILE_UPLOAD_PATH'], file_name), optimize=True, quality=85)
     return file_name
+'''
+    重命名文件
+'''
+def random_filename(filename):
+    ext = os.path.splitext(filename)[1]
+    new_file_name = uuid.uuid4().hex + ext
+    return new_file_name
