@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, url_for, redirect, request, flash,
 from flask_login import login_required,current_user
 from zeus.forms.personal import ProfileForm, AvatarForm, CropAvatarForm
 from zeus.extensions import db, avatars
+from sqlalchemy import text
 bp_personal = Blueprint('personal', __name__)
 '''
     个人设置
@@ -54,6 +55,15 @@ def upload():
 @bp_personal.route('/setting/avatar/crop', methods=['POST'])
 @login_required
 def crop():
+    sql = '''
+        select id, code, name from user where code = '%(code)s'
+    ''' % {'code': '20112004'}
+    ts = text('select id, code, name from user where code = :code')
+    #results = db.session.execute(sql)
+    results = db.session.execute(ts, {'code': '20112004'})
+    print('Result is : >>>>>>>>>>>>>>>>>>>', results)
+    for result in results:
+        print('Result data is : ', result)
     form = CropAvatarForm()
     if form.validate_on_submit():
         x = form.x.data
