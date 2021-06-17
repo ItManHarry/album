@@ -1,52 +1,60 @@
 {% extends 'user/setting/base.html' %}
 {% block title %}{{ user.name }}-消息管理{% endblock %}
 {% block content %}
-    <table class="table table-hover">
-        <thead>
-            <tr class="text-center">
-                <th>#</th>
-                <th>消息</th>
-                <th>状态</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% if notices %}
-                {% for notice in notices %}
-                    <tr class="text-center">
-                        <td>{{ loop.index }}</td>
-                        <td>{{ notice.message|truncate(length=20) }}</td>
-                        <td>{{ '已读' if notice.is_read else '未读'}}</td>
-                        <td>
-                            <a href="javascript:showNotice('{{notice.id}}')" class="btn btn-outline-info btn-sm" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="top" data-content="Read"><i class="fab fa-readme"></i></a>
-                            <a href="{{ url_for('personal.notice_delete', notice_id=notice.id) }}" class="btn btn-outline-danger btn-sm"  data-container="body" data-trigger="hover" data-toggle="popover" data-placement="top" data-content="Delete"><i class="far fa-trash-alt"></i></a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            {% else %}
-                <tr>
-                    <td colspan="4" class="text-center">
-                        <h5>暂未收到任何消息!!!</h5>
-                    </td>
-                </tr>
-            {% endif %}
-        </tbody>
-    </table>
-    <div class="modal fade" id="noticeShow" tabindex="-1" aria-labelledby="noticeShowLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="noticeShowLabel">消息查看</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <h5 id = "noticeContent">&nbsp;</h5>
-          </div>
+<div class="row">
+    <div class="col">
+        <div class="card w-100">
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr class="text-center">
+                            <th>#</th>
+                            <th>消息</th>
+                            <th>状态</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if notices %}
+                            {% for notice in notices %}
+                                <tr class="text-center">
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ notice.message|truncate(length=20) }}</td>
+                                    <td>{{ '已读' if notice.is_read else '未读'}}</td>
+                                    <td>
+                                        <a href="javascript:showNotice('{{notice.id}}')" class="btn btn-outline-info btn-sm" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="top" data-content="Read"><i class="fab fa-readme"></i></a>
+                                        <a href="{{ url_for('personal.notice_delete', notice_id=notice.id) }}" class="btn btn-outline-danger btn-sm"  data-container="body" data-trigger="hover" data-toggle="popover" data-placement="top" data-content="Delete"><i class="far fa-trash-alt"></i></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center">
+                                    <h5>暂未收到任何消息!!!</h5>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
         </div>
+    </div>
+</div>
+<div class="modal fade" id="noticeShow" tabindex="-1" aria-labelledby="noticeShowLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="noticeShowLabel">消息查看</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h5 id = "noticeContent">&nbsp;</h5>
       </div>
     </div>
+  </div>
+</div>
 {% endblock %}
 <script>
     {% block ready %}

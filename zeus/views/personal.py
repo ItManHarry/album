@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, url_for, redirect, request, flash, current_app, jsonify
 from flask_login import login_required,current_user
-from zeus.forms.personal import ProfileForm, AvatarForm, CropAvatarForm
+from zeus.forms.personal import ProfileForm, AvatarForm, CropAvatarForm, ResetPasswordForm
 from zeus.extensions import db, avatars
 from sqlalchemy import text
 from zeus.models import Notification
@@ -109,3 +109,19 @@ def notice_delete(notice_id):
     db.session.delete(notice)
     db.session.commit()
     return redirect(url_for('.notice_list', user_id=current_user.id))
+'''
+    密码更改
+'''
+@bp_personal.route('/setting/password/reset', methods=['GET','POST'])
+@login_required
+def reset_password():
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        if current_user.validate_password(form.old_password.data):
+            current_user.set_password(form.new_password.data)
+            db.session.commit()
+            flash('密码更改成功!!!')
+        else:
+            flash('您输入的旧密码错误!!!')
+        return redirect(url_for('.reset_password'))
+    return render_template('user/setting/password.html', form=form, user=current_user)
