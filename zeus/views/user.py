@@ -139,33 +139,3 @@ def notice_count(user_id):
     user = User.query.get_or_404(user_id)
     notices = Notification.query.with_parent(user).all()
     return jsonify(count=len(notices))
-'''
-    消息清单
-'''
-@bp_user.route('/notice/list/<user_id>')
-@login_required                   #是否登录
-def notice_list(user_id):
-    user = User.query.get_or_404(user_id)
-    notices = Notification.query.with_parent(user).order_by(Notification.timestamp.desc()).all()
-    return render_template('user/notices.html', notices=notices, user=user)
-'''
-    查看消息
-'''
-@bp_user.route('/notice/show/<notice_id>')
-@login_required
-def notice_show(notice_id):
-    notice = Notification.query.get_or_404(notice_id)
-    if not notice.is_read:
-        notice.is_read = True
-        db.session.commit()
-    return render_template('user/notice_show.html', notice=notice)
-'''
-    删除消息
-'''
-@bp_user.route('/notice/delete/<notice_id>')
-@login_required
-def notice_delete(notice_id):
-    notice = Notification.query.get_or_404(notice_id)
-    db.session.delete(notice)
-    db.session.commit()
-    return redirect(url_for('.notice_list', user_id=current_user.id))

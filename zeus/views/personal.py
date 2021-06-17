@@ -3,6 +3,7 @@ from flask_login import login_required,current_user
 from zeus.forms.personal import ProfileForm, AvatarForm, CropAvatarForm
 from zeus.extensions import db, avatars
 from sqlalchemy import text
+from zeus.models import Notification
 bp_personal = Blueprint('personal', __name__)
 '''
     个人设置
@@ -80,3 +81,32 @@ def crop():
         db.session.commit()
         flash('头像更新成功!!!')
     return redirect(url_for('.avatar'))
+'''
+    消息管理
+'''
+@bp_personal.route('/setting/notice/list')
+@login_required                   #是否登录
+def notice_list():
+    notices = Notification.query.with_parent(current_user).order_by(Notification.timestamp.desc()).all()
+    return render_template('user/setting/notices.html', notices=notices, user=current_user)
+'''
+    查看消息
+'''
+@bp_personal.route('/setting/notice/show/<notice_id>')
+@login_required
+def notice_show(notice_id):
+    notice = Notification.query.get_or_404(notice_id)
+    if not notice.is_read:
+        notice.is_read = True
+        db.session.commit()
+    return render_template('user/setting/notice_show.html', notice=notice)
+'''
+    删除消息
+'''
+@bp_personal.route('/setting/notice/delete/<notice_id>')
+@login_required
+def notice_delete(notice_id):
+    notice = Notification.query.get_or_404(notice_id)
+    db.session.delete(notice)
+    db.session.commit()
+    return redirect(url_for('.notice_list', user_id=current_user.id))
