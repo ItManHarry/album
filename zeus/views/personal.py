@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, url_for, redirect, request, flash, current_app
+from flask import Blueprint, render_template, url_for, redirect, request, flash, current_app, jsonify
 from flask_login import login_required,current_user
 from zeus.forms.personal import ProfileForm, AvatarForm, CropAvatarForm
 from zeus.extensions import db, avatars
@@ -93,13 +93,12 @@ def notice_list():
     查看消息
 '''
 @bp_personal.route('/setting/notice/show/<notice_id>')
-@login_required
 def notice_show(notice_id):
     notice = Notification.query.get_or_404(notice_id)
     if not notice.is_read:
         notice.is_read = True
         db.session.commit()
-    return render_template('user/setting/notice_show.html', notice=notice)
+    return jsonify(message=notice.message)
 '''
     删除消息
 '''

@@ -18,7 +18,7 @@
                         <td>{{ notice.message|truncate(length=20) }}</td>
                         <td>{{ '已读' if notice.is_read else '未读'}}</td>
                         <td>
-                            <a href="{{ url_for('personal.notice_show', notice_id=notice.id) }}" class="btn btn-outline-info btn-sm" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="top" data-content="Read"><i class="fab fa-readme"></i></a>
+                            <a href="javascript:showNotice('{{notice.id}}')" class="btn btn-outline-info btn-sm" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="top" data-content="Read"><i class="fab fa-readme"></i></a>
                             <a href="{{ url_for('personal.notice_delete', notice_id=notice.id) }}" class="btn btn-outline-danger btn-sm"  data-container="body" data-trigger="hover" data-toggle="popover" data-placement="top" data-content="Delete"><i class="far fa-trash-alt"></i></a>
                         </td>
                     </tr>
@@ -32,6 +32,21 @@
             {% endif %}
         </tbody>
     </table>
+    <div class="modal fade" id="noticeShow" tabindex="-1" aria-labelledby="noticeShowLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="noticeShowLabel">消息查看</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <h5 id = "noticeContent">&nbsp;</h5>
+          </div>
+        </div>
+      </div>
+    </div>
 {% endblock %}
 <script>
     {% block ready %}
@@ -40,4 +55,21 @@
             $('[data-toggle="popover"]').popover()
         })
     {% endblock %}
+    {% block function %}
+        function showNotice(noticeId){
+            var url = '/personal/setting/notice/show/'+noticeId
+            $.ajax({
+                type:'get',
+                url: url,
+                data:{},
+                success:function(data){
+                    $('#noticeContent').text(data.message)
+                    $('#noticeShow').modal('show')
+                },
+                error:function(){
+                    alert('System error!!!')
+                }
+            })
+        }
+    {% endblock%}
 </script>
