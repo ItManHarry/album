@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms import StringField, SubmitField, DateField, HiddenField
-from wtforms.validators import DataRequired, Length, Email, Regexp
+from wtforms import StringField, SubmitField, DateField, HiddenField, PasswordField
+from wtforms.validators import DataRequired, Length, Email, Regexp, EqualTo
 from wtforms import ValidationError, validators
 from flask_login import current_user
 from zeus.models import User
@@ -33,4 +33,12 @@ class CropAvatarForm(FlaskForm):
     y = HiddenField()
     w = HiddenField()
     h = HiddenField()
+    submit = SubmitField('保存')
+'''
+    密码重置表单
+'''
+class ResetPasswordForm(FlaskForm):
+    old_password = PasswordField('旧密码', validators=[DataRequired('请输入旧密码!!!'), Length(8, 128, '长度要介于8~128!!!')])
+    new_password = PasswordField('新密码', validators=[DataRequired('请输入新密码!!!'), Length(8, 128, '长度要介于8~128!!!'), EqualTo('new_password_confirm', message='新密码不一致!!!')])
+    new_password_confirm = PasswordField('确认新密码', validators=[DataRequired('请确认新密码!!!')])
     submit = SubmitField('保存')
