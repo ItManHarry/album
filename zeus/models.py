@@ -174,6 +174,15 @@ class User(db.Model, UserMixin):
         if follow:
             db.session.delete(follow)
             db.session.commit()
+#用户删除后,执行头像删除
+@db.event.listens_for(User, 'after_delete', named=True)
+def delete_photo(**kwargs):
+    target = kwargs['target']
+    for file_name in [target.avatar_s, target.avatar_m, target.avatar_l, target.avatar_r]:
+        if file_name is not None:
+            file = os.path.join(current_app.config['AVATARS_SAVE_PATH'], file_name)
+            if os.path.exists(file):
+                os.remove(file)
 '''
     登录履历
 '''

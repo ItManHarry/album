@@ -42,3 +42,13 @@ class ResetPasswordForm(FlaskForm):
     new_password = PasswordField('新密码', validators=[DataRequired('请输入新密码!!!'), Length(8, 128, '长度要介于8~128!!!'), EqualTo('new_password_confirm', message='新密码不一致!!!')])
     new_password_confirm = PasswordField('确认新密码', validators=[DataRequired('请确认新密码!!!')])
     submit = SubmitField('保存')
+'''
+    注销用户表单
+'''
+class DestroyUserForm(FlaskForm):
+    code = StringField('账号', validators=[DataRequired('请输入账号!!!'), Length(1, 20, '长度要介于1~20!!!')])
+    def validate_code(self, field):
+        if field.data == 'admin':
+            raise ValidationError('管理员不能注销!!!')
+        if field.data != current_user.code:
+            raise ValidationError('账号错误!!!')

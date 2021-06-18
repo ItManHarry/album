@@ -1,0 +1,81 @@
+{% extends 'user/setting/base.html' %}
+{% block title %}{{ user.name }}-账号注销{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col">
+        <div class="card w-100">
+            <div class="card-body">
+                <div class="row">
+                    <div class = "col">
+                        {% if get_flashed_messages() %}
+                            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                              {% for message in get_flashed_messages() %}
+                                <small>{{ message }}</small>
+                              {% endfor %}
+                              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <form method="post" id = "destroy_form">
+                            {{form.csrf_token }}
+                            <div class="form-group">
+                                {{form.code.label}}
+                                {{form.code(class='form-control')}}
+                                {% for message in form.code.errors %}
+                                    <small class="text-danger">
+                                        {{ message }}
+                                    </small>
+                                {% endfor %}
+                            </div>
+                            <div class="form-row">
+                                <div class="col-3">
+                                     <button type="button" class="btn btn-outline-danger btn-block" onclick="doDestroy()">
+                                        <i class="fas fa-ban"></i>&nbsp;注销
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+<script>
+    {% block function %}
+      function doDestroy(){
+        if($.trim($("#code").val()) == ''){
+            $.alert({
+                title:'提示',
+                content: '请输入账号！！！'
+            })
+        }else{
+            $.confirm({
+                title: '提示!',
+                content: '确定要注销？',
+                boxWidth: '25%',
+                useBootstrap: false,
+                type: 'red',
+                typeAnimated: true,
+                buttons: {
+                    cancel:{
+                        text:"取消"
+                    },
+                    confirm:{
+                        text:"确定",
+                        action:function () {
+                            $('#destroy_form').submit()
+                        }
+                    }
+                }
+            });
+        }
+    }
+    {% endblock%}
+</script>
