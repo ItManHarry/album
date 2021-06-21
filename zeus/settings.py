@@ -43,6 +43,7 @@ class GlobalSetting():
     AVATARS_SAVE_PATH = os.path.join(SYS_FILE_UPLOAD_PATH, 'avatars')       #头像存储路径
     AVATARS_SIZE_TUPLE = (24, 100, 200)                                     #头像尺寸
     WHOOSHEE_MIN_STRING_LEN = 1                                             #whooshee搜索引擎最小搜索关键字长度
+    WHOOSHEE_MEMORY_STORAGE = True
 class DevelopSetting(GlobalSetting):
     # 数据库配置
     SQLALCHEMY_TRACK_MODIFICATIONS = False

@@ -38,10 +38,10 @@ class Role(db.Model):
     @staticmethod
     def init_role():
         roles_permissions_map = {
-            'Locked': ['FOLLOW','COLLECT'],
-            'User': ['FOLLOW','COLLECT','COMMENT','UPLOAD'],
-            'Moderator': ['FOLLOW', 'COLLECT', 'COMMENT', 'UPLOAD','MODERATE'],
-            'Administrator': ['FOLLOW', 'COLLECT', 'COMMENT', 'UPLOAD','MODERATE','ADMINISTRATOR']
+            'Locked': ['FOLLOW', 'COLLECT'],
+            'User': ['FOLLOW', 'COLLECT', 'COMMENT', 'UPLOAD'],
+            'Moderator': ['FOLLOW', 'COLLECT', 'COMMENT', 'UPLOAD', 'MODERATE'],
+            'Administrator': ['FOLLOW', 'COLLECT', 'COMMENT', 'UPLOAD', 'MODERATE', 'ADMINISTRATOR']
         }
         for role_name in roles_permissions_map:
             role = Role.query.filter_by(name=role_name).first()
@@ -93,11 +93,11 @@ class User(db.Model, UserMixin):
     location = db.Column(db.String(50))                             #地址
     member_since = db.Column(db.DateTime, default=datetime.utcnow)  #注册时间
     active = db.Column(db.Boolean, default=False)                   #已激活
-    role_id = db.Column(db.String(32), db.ForeignKey('role.id'))    #所属角色(角色外键)
     avatar_s = db.Column(db.String(64))                             #小头像
     avatar_m = db.Column(db.String(64))                             #中头像
     avatar_l = db.Column(db.String(64))                             #大头像
     avatar_r = db.Column(db.String(64))                             #自定义头像
+    role_id = db.Column(db.String(32), db.ForeignKey('role.id'))    #所属角色(角色外键)
     role = db.relationship('Role', back_populates='users')          #对应角色(反向关联)
     photos = db.relationship('Photo', back_populates='author',cascade='all')#上传图片(反向关联)
     logins = db.relationship('Login', back_populates='user', cascade='all') #登录履历(反向关联)
