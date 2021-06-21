@@ -1,7 +1,7 @@
 from flask import Flask,render_template,redirect,url_for
 from flask_wtf.csrf import CSRFError
 from zeus.settings import config
-from zeus.extensions import bootstrap,moment,mail,ckeditor,db,migrate,csrf,login_manager,dropzone,avatars
+from zeus.extensions import bootstrap, moment, mail, ckeditor, db, migrate, csrf, login_manager, dropzone, avatars, whooshee
 import click
 import uuid
 #创建Flask实例
@@ -34,6 +34,7 @@ def register_web_extensions(app):
     csrf.init_app(app)
     dropzone.init_app(app)
     avatars.init_app(app)
+    whooshee.init_app(app)
 #配置全局路径
 def register_web_global_path(app):
     #系统主页

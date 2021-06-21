@@ -179,3 +179,14 @@ def get_all_photo_ids(user=None,nav=None):
         ids.append(photo.id)
     print('Photo count is  : ', len(ids))
     return ids
+@bp_main.route('/photo/search')
+def search():
+    q = request.args.get('q', '')
+    if q.strip() == '':
+        flash('请输入搜索关键字!!!')
+        return redirect_back()
+    page = request.args.get('page', 1, type=int)
+    per_page = current_app.config['ITEM_COUNT_PER_PAGE']
+    pagination = Photo.query.whooshee_search(q).paginate(page, per_page)
+    results = pagination.items
+    return render_template('main/search.html', q=q, results=results, pagination=pagination)

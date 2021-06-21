@@ -11,6 +11,7 @@ from flask_login import LoginManager,AnonymousUserMixin
 from flask_wtf.csrf import CSRFProtect
 from flask_dropzone import Dropzone
 from flask_avatars import Avatars
+from flask_whooshee import Whooshee
 #创建扩展实例
 bootstrap = Bootstrap()
 db = SQLAlchemy()
@@ -40,3 +41,4 @@ class Guest(AnonymousUserMixin):
 login_manager.anonymous_user = Guest
 dropzone = Dropzone()
 avatars = Avatars()
+whooshee = Whooshee()

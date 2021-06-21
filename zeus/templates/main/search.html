@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% from 'macros/macros.html' import photo_card with context %}
+{% from 'bootstrap/pagination.html' import render_pagination with context %}
+{% block title %}搜索结果{{q}}{% endblock %}
+{% block main %}
+<div class = "container-fluid">
+    <div class="page-header">
+        <h2>搜索 : {{q}}</h2>
+    </div>
+    {% if results %}
+        {{ render_pagination(pagination,align='right') }}
+        <div class="row">
+            {% for photo in results %}
+                <div class="col-md-3">
+                    {{ photo_card(photo, 'home','none') }}
+                </div>
+            {% endfor %}
+        </div>
+        {{ render_pagination(pagination,align='right') }}
+    {% else %}
+        <div class="row">
+            <div class="col-md-12 text-center">
+                  没有任何搜索结果!!!
+            </div>
+        </div>
+    {% endif %}
+</div>
+{%endblock%}

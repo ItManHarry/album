@@ -41,7 +41,8 @@ class GlobalSetting():
         ALBUM_IMG_SIZE['medium']: '_m'  #中等图
     }
     AVATARS_SAVE_PATH = os.path.join(SYS_FILE_UPLOAD_PATH, 'avatars')       #头像存储路径
-    AVATARS_SIZE_TUPLE = (24,100,200)                                       #头像尺寸
+    AVATARS_SIZE_TUPLE = (24, 100, 200)                                     #头像尺寸
+    WHOOSHEE_MIN_STRING_LEN = 1                                             #whooshee搜索引擎最小搜索关键字长度
 class DevelopSetting(GlobalSetting):
     # 数据库配置
     SQLALCHEMY_TRACK_MODIFICATIONS = False

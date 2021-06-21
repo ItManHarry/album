@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import current_app
 from flask_login import UserMixin
 from flask_avatars import Identicon
-from zeus.extensions import db
+from zeus.extensions import db, whooshee
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
 import os
@@ -176,7 +176,7 @@ class User(db.Model, UserMixin):
             db.session.commit()
 #用户删除后,执行头像删除
 @db.event.listens_for(User, 'after_delete', named=True)
-def delete_photo(**kwargs):
+def delete_user(**kwargs):
     target = kwargs['target']
     for file_name in [target.avatar_s, target.avatar_m, target.avatar_l, target.avatar_r]:
         if file_name is not None:
@@ -195,6 +195,7 @@ class Login(db.Model):
 '''
     图片信息
 '''
+@whooshee.register_model('description')
 class Photo(db.Model):
     id = db.Column(db.String(32), primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)     #上传时间
