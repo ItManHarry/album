@@ -1,8 +1,10 @@
 from datetime import datetime
+#import whoosh.fields
 from flask import current_app
 from flask_login import UserMixin
 from flask_avatars import Identicon
 from zeus.extensions import db, whooshee
+#from flask_whooshee import AbstractWhoosheer
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
 import os
@@ -210,6 +212,41 @@ class Photo(db.Model):
     author_id = db.Column(db.String(32), db.ForeignKey('user.id'))  #上传人ID(外键)
     author = db.relationship('User', back_populates='photos')       #上传人(反向关联)
     collectors = db.relationship('Collect', back_populates='collected', cascade='all')#收藏人
+'''
+@whooshee.register_whoosheer
+class PhotoUserWhoosheer(AbstractWhoosheer):
+    schema = whoosh.fields.Schema(
+        photo_id = whoosh.fields.TEXT(stored=True),
+        user_id = whoosh.fields.TEXT(stored=True),
+        description = whoosh.fields.TEXT()
+    )
+
+    models = [Photo, User]
+
+    @classmethod
+    def update_user(cls, writer, user):
+        pass
+    @classmethod
+    def update_photo(cls, writer, photo):
+        writer.update_document(photo_id = photo.id,
+                               user_id = photo.author.id,
+                               description = photo.description)
+    @classmethod
+    def insert_user(cls, writer, user):
+        pass
+    @classmethod
+    def insert_photo(cls, writer, photo):
+        writer.add_document(photo_id=photo.id,
+                            user_id=photo.author.id,
+                            description=photo.description)
+    @classmethod
+    def delete_user(cls, writer, user):
+        pass
+    @classmethod
+    def delete_photo(cls, writer, photo):
+        writer.delete_by_term('photo_id', photo.id)
+whooshee.register_whoosheer(PhotoUserWhoosheer)
+'''
 #图片数据删除后,执行图片文件删除
 @db.event.listens_for(Photo, 'after_delete', named=True)
 def delete_photo(**kwargs):

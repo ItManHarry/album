@@ -187,6 +187,7 @@ def search():
         return redirect_back()
     page = request.args.get('page', 1, type=int)
     per_page = current_app.config['ITEM_COUNT_PER_PAGE']
-    pagination = Photo.query.whooshee_search(q).paginate(page, per_page)
+    #pagination = Photo.query.whooshee_search(q).paginate(page, per_page)
+    pagination = Photo.query.filter(Photo.description.like('%'+q+'%')).paginate(page, per_page)
     results = pagination.items
     return render_template('main/search.html', q=q, results=results, pagination=pagination)
